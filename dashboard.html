@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-QA Pipeline Dashboard — Котософт</title>
+    <meta name="description" content="Dashboard for visualizing AI-QA Pipeline test results for котософт.рф">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2235;
+            --bg-card-hover: #1e2a42;
+            --border: #2a3550;
+            --text-primary: #e8ecf4;
+            --text-secondary: #8b95a8;
+            --text-muted: #5a6478;
+            --accent-green: #22c55e;
+            --accent-green-bg: rgba(34,197,94,0.12);
+            --accent-red: #ef4444;
+            --accent-red-bg: rgba(239,68,68,0.12);
+            --accent-yellow: #eab308;
+            --accent-yellow-bg: rgba(234,179,8,0.12);
+            --accent-blue: #3b82f6;
+            --accent-blue-bg: rgba(59,130,246,0.12);
+            --accent-purple: #a855f7;
+            --accent-purple-bg: rgba(168,85,247,0.12);
+            --gradient-1: linear-gradient(135deg, #3b82f6, #a855f7);
+            --gradient-2: linear-gradient(135deg, #22c55e, #06b6d4);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
+            --shadow-card: 0 4px 16px rgba(0,0,0,0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse 800px 600px at 20% 30%, rgba(59,130,246,0.06), transparent),
+                radial-gradient(ellipse 600px 400px at 80% 60%, rgba(168,85,247,0.05), transparent),
+                radial-gradient(ellipse 500px 300px at 50% 90%, rgba(34,197,94,0.04), transparent);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            padding: 32px 0 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .refresh-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .refresh-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px rgba(59,130,246,0.15);
+        }
+
+        .refresh-btn.loading .refresh-icon {
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+        }
+
+        .stat-card.green::before { background: var(--gradient-2); }
+        .stat-card.red::before { background: linear-gradient(90deg, #ef4444, #f97316); }
+        .stat-card.blue::before { background: var(--gradient-1); }
+        .stat-card.purple::before { background: linear-gradient(90deg, #a855f7, #ec4899); }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .stat-card.green .stat-value { color: var(--accent-green); }
+        .stat-card.red .stat-value { color: var(--accent-red); }
+        .stat-card.blue .stat-value { color: var(--accent-blue); }
+        .stat-card.purple .stat-value { color: var(--accent-purple); }
+
+        .stat-extra {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Section title */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Runs list */
+        .runs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .run-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .run-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 30px rgba(59,130,246,0.08);
+        }
+
+        .run-card.expanded {
+            border-color: var(--accent-blue);
+        }
+
+        .run-header {
+            display: flex;
+            align-items: center;
+            padding: 18px 24px;
+            gap: 16px;
+        }
+
+        .run-status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .run-status-dot.success {
+            background: var(--accent-green);
+            box-shadow: 0 0 12px rgba(34,197,94,0.5);
+        }
+
+        .run-status-dot.failure {
+            background: var(--accent-red);
+            box-shadow: 0 0 12px rgba(239,68,68,0.5);
+        }
+
+        .run-status-dot.success::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 2px solid rgba(34,197,94,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0; transform: scale(1.5); }
+        }
+
+        .run-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .run-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .run-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .run-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .run-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .run-badge.success {
+            background: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .run-badge.failure {
+            background: var(--accent-red-bg);
+            color: var(--accent-red);
+        }
+
+        .run-duration {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .run-chevron {
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .run-card.expanded .run-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Steps panel */
+        .steps-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .run-card.expanded .steps-panel {
+            max-height: 1200px;
+        }
+
+        .steps-content {
+            padding: 0 24px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(42,53,80,0.5);
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .step-icon.success {
+            background: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .step-icon.failure {
+            background: var(--accent-red-bg);
+            color: var(--accent-red);
+        }
+
+        .step-icon.skipped {
+            background: var(--accent-yellow-bg);
+            color: var(--accent-yellow);
+        }
+
+        .step-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .step-duration {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Timeline */
+        .timeline-section {
+            margin-bottom: 40px;
+        }
+
+        .timeline-chart {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 200px;
+            overflow-x: auto;
+        }
+
+        .timeline-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 60px;
+        }
+
+        .timeline-bar {
+            width: 100%;
+            max-width: 48px;
+            border-radius: 6px 6px 2px 2px;
+            min-height: 8px;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .timeline-bar.success {
+            background: linear-gradient(180deg, var(--accent-green), rgba(34,197,94,0.6));
+        }
+
+        .timeline-bar.failure {
+            background: linear-gradient(180deg, var(--accent-red), rgba(239,68,68,0.6));
+        }
+
+        .timeline-bar:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px rgba(59,130,246,0.2);
+        }
+
+        .timeline-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .timeline-duration-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Loading state */
+        .loading-overlay {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            gap: 16px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Error state */
+        .error-box {
+            background: var(--accent-red-bg);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .error-box h3 {
+            color: var(--accent-red);
+            margin-bottom: 8px;
+        }
+
+        .error-box p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .animate-in:nth-child(1) { animation-delay: 0.05s; }
+        .animate-in:nth-child(2) { animation-delay: 0.1s; }
+        .animate-in:nth-child(3) { animation-delay: 0.15s; }
+        .animate-in:nth-child(4) { animation-delay: 0.2s; }
+        .animate-in:nth-child(5) { animation-delay: 0.25s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .run-header {
+                padding: 14px 16px;
+                flex-wrap: wrap;
+            }
+            .stat-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <div class="header-left">
+                    <div class="logo">🧪</div>
+                    <div>
+                        <h1 class="header-title">AI-QA Pipeline Dashboard</h1>
+                        <p class="header-subtitle">Котософт.рф — Автоматизированное тестирование</p>
+                    </div>
+                </div>
+                <button class="refresh-btn" id="refreshBtn" onclick="loadData()">
+                    <svg class="refresh-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M13.65 2.35A8 8 0 1 0 16 8h-2a6 6 0 1 1-1.76-4.24L10 6h6V0l-2.35 2.35z" fill="currentColor"/>
+                    </svg>
+                    Обновить
+                </button>
+            </div>
+        </header>
+
+        <div id="content">
+            <div class="loading-overlay">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Загрузка данных из GitHub Actions...</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>AI-QA-Engine-Pipeline • Dify + GitHub Actions • Курсовая работа 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        const OWNER = 'thedemaxxx-byte';
+        const REPO = 'Kyrsovaya';
+        const API_BASE = `https://api.github.com/repos/${OWNER}/${REPO}`;
+
+        async function fetchRuns() {
+            const resp = await fetch(`${API_BASE}/actions/runs?per_page=10`);
+            if (!resp.ok) throw new Error(`GitHub API error: ${resp.status}`);
+            return resp.json();
+        }
+
+        async function fetchJobs(runId) {
+            const resp = await fetch(`${API_BASE}/actions/runs/${runId}/jobs`);
+            if (!resp.ok) throw new Error(`Jobs fetch error: ${resp.status}`);
+            return resp.json();
+        }
+
+        function formatDuration(startStr, endStr) {
+            if (!startStr || !endStr) return '—';
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+            const diff = Math.round((end - start) / 1000);
+            if (diff < 60) return `${diff}с`;
+            const m = Math.floor(diff / 60);
+            const s = diff % 60;
+            return `${m}м ${s}с`;
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('ru-RU', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function getDurationSeconds(startStr, endStr) {
+            if (!startStr || !endStr) return 0;
+            return Math.round((new Date(endStr) - new Date(startStr)) / 1000);
+        }
+
+        function getStepIcon(conclusion) {
+            if (conclusion === 'success') return '✓';
+            if (conclusion === 'failure') return '✗';
+            if (conclusion === 'skipped') return '⊘';
+            return '?';
+        }
+
+        function renderStepConclusion(conclusion) {
+            return conclusion || 'unknown';
+        }
+
+        async function loadData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('loading');
+
+            try {
+                const runsData = await fetchRuns();
+                const runs = runsData.workflow_runs || [];
+
+                if (runs.length === 0) {
+                    document.getElementById('content').innerHTML = `
+                        <div class="error-box">
+                            <h3>Нет данных</h3>
+                            <p>Запуски тестов не найдены. Запустите pipeline через Dify.</p>
+                        </div>`;
+                    btn.classList.remove('loading');
+                    return;
+                }
+
+                // Fetch jobs for all runs in parallel
+                const jobsPromises = runs.map(r => fetchJobs(r.id));
+                const jobsResults = await Promise.all(jobsPromises);
+
+                // Compute stats
+                const totalRuns = runs.length;
+                const successRuns = runs.filter(r => r.conclusion === 'success').length;
+                const failedRuns = runs.filter(r => r.conclusion === 'failure').length;
+                const avgDuration = runs.reduce((sum, r) => {
+                    return sum + getDurationSeconds(r.run_started_at, r.updated_at);
+                }, 0) / totalRuns;
+
+                let html = '';
+
+                // Stats
+                html += `
+                <div class="stats-grid">
+                    <div class="stat-card blue animate-in">
+                        <div class="stat-label">Всего запусков</div>
+                        <div class="stat-value">${totalRuns}</div>
+                        <div class="stat-extra">За всё время</div>
+                    </div>
+                    <div class="stat-card green animate-in">
+                        <div class="stat-label">Успешных</div>
+                        <div class="stat-value">${successRuns}</div>
+                        <div class="stat-extra">${totalRuns > 0 ? Math.round(successRuns / totalRuns * 100) : 0}% success rate</div>
+                    </div>
+                    <div class="stat-card red animate-in">
+                        <div class="stat-label">С ошибками</div>
+                        <div class="stat-value">${failedRuns}</div>
+                        <div class="stat-extra">${totalRuns > 0 ? Math.round(failedRuns / totalRuns * 100) : 0}% failure rate</div>
+                    </div>
+                    <div class="stat-card purple animate-in">
+                        <div class="stat-label">Сред. время</div>
+                        <div class="stat-value">${Math.round(avgDuration)}с</div>
+                        <div class="stat-extra">На выполнение pipeline</div>
+                    </div>
+                </div>`;
+
+                // Timeline chart
+                const maxDuration = Math.max(...runs.map(r => getDurationSeconds(r.run_started_at, r.updated_at)), 1);
+                const barsHtml = runs.slice().reverse().map(r => {
+                    const dur = getDurationSeconds(r.run_started_at, r.updated_at);
+                    const height = Math.max(8, (dur / maxDuration) * 120);
+                    const cls = r.conclusion === 'success' ? 'success' : 'failure';
+                    const d = new Date(r.created_at);
+                    const label = `${d.getDate()}.${d.getMonth()+1}`;
+                    return `
+                        <div class="timeline-bar-wrapper">
+                            <div class="timeline-duration-label">${formatDuration(r.run_started_at, r.updated_at)}</div>
+                            <div class="timeline-bar ${cls}" style="height: ${height}px" title="Run #${r.run_number}: ${r.conclusion}"></div>
+                            <div class="timeline-label">#${r.run_number}</div>
+                        </div>`;
+                }).join('');
+
+                html += `
+                <div class="timeline-section">
+                    <h2 class="section-title">
+                        <span class="icon" style="background: var(--accent-blue-bg); color: var(--accent-blue);">📊</span>
+                        Хронология запусков
+                    </h2>
+                    <div class="timeline-chart">${barsHtml}</div>
+                </div>`;
+
+                // Runs list
+                html += `
+                <h2 class="section-title">
+                    <span class="icon" style="background: var(--accent-purple-bg); color: var(--accent-purple);">🔬</span>
+                    Подробности запусков
+                </h2>
+                <div class="runs-list">`;
+
+                runs.forEach((run, i) => {
+                    const jobs = jobsResults[i].jobs || [];
+                    const statusCls = run.conclusion === 'success' ? 'success' : 'failure';
+                    const badgeText = run.conclusion === 'success' ? 'Успех' : 'Ошибка';
+                    const duration = formatDuration(run.run_started_at, run.updated_at);
+
+                    // Build steps HTML
+                    let stepsHtml = '';
+                    jobs.forEach(job => {
+                        const steps = job.steps || [];
+                        steps.forEach(step => {
+                            const stepCls = renderStepConclusion(step.conclusion);
+                            const stepDur = formatDuration(step.started_at, step.completed_at);
+                            stepsHtml += `
+                                <div class="step-item">
+                                    <div class="step-icon ${stepCls}">${getStepIcon(step.conclusion)}</div>
+                                    <span class="step-name">${step.name}</span>
+                                    <span class="step-duration">${stepDur}</span>
+                                </div>`;
+                        });
+                    });
+
+                    html += `
+                    <div class="run-card animate-in" id="run-${run.id}" onclick="toggleRun('run-${run.id}')">
+                        <div class="run-header">
+                            <div class="run-status-dot ${statusCls}"></div>
+                            <div class="run-info">
+                                <div class="run-name">${run.display_title} #${run.run_number}</div>
+                                <div class="run-meta">
+                                    <span>📅 ${formatDate(run.created_at)}</span>
+                                    <span>🔀 ${run.head_branch}</span>
+                                    <span>⚡ ${run.event}</span>
+                                </div>
+                            </div>
+                            <span class="run-badge ${statusCls}">${badgeText}</span>
+                            <span class="run-duration">⏱ ${duration}</span>
+                            <svg class="run-chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
+                            </svg>
+                        </div>
+                        <div class="steps-panel">
+                            <div class="steps-content">
+                                ${stepsHtml}
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                html += `</div>`;
+
+                document.getElementById('content').innerHTML = html;
+
+            } catch (err) {
+                document.getElementById('content').innerHTML = `
+                    <div class="error-box">
+                        <h3>Ошибка загрузки</h3>
+                        <p>${err.message}</p>
+                    </div>`;
+            }
+
+            btn.classList.remove('loading');
+        }
+
+        function toggleRun(id) {
+            const card = document.getElementById(id);
+            card.classList.toggle('expanded');
+        }
+
+        // Load on page open
+        loadData();
+    </script>
+</body>
+</html>
