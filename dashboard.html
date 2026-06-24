@@ -345,9 +345,9 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('overview')">📊 Обзор</button>
-            <button class="tab" onclick="switchTab('tests')">🔬 Тесты</button>
-            <button class="tab" onclick="switchTab('dify')">🤖 Dify AI</button>
+            <button class="tab active" onclick="switchTab('overview', event)">📊 Обзор</button>
+            <button class="tab" onclick="switchTab('tests', event)">🔬 Тесты</button>
+            <button class="tab" onclick="switchTab('dify', event)">🤖 Dify AI</button>
         </div>
 
         <!-- Tab: Overview -->
@@ -391,10 +391,11 @@
         const API_BASE = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
         // ---- Tab switching ----
-        function switchTab(name) {
+        function switchTab(name, evt) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
+            if (evt && evt.target) evt.target.classList.add('active');
+            else document.querySelector(`.tab[onclick*="${name}"]`)?.classList.add('active');
             document.getElementById(`tab-${name}`).classList.add('active');
         }
 
@@ -425,6 +426,7 @@
 
         // ---- Load Overview ----
         async function loadOverview() {
+            try {
             const runsResp = await fetch(`${API_BASE}/actions/runs?per_page=10`);
             if (!runsResp.ok) throw new Error(`GitHub API: ${runsResp.status}`);
             const runsData = await runsResp.json();
@@ -490,6 +492,9 @@
             });
             html += `</div>`;
             document.getElementById('overview-content').innerHTML = html;
+            } catch (err) {
+                document.getElementById('overview-content').innerHTML = `<div class="error-box"><h3>Ошибка загрузки</h3><p>${escapeHtml(err.message)}</p><p style="font-size:12px;color:var(--text-muted);margin-top:8px;">GitHub API имеет лимит 60 запросов/час без авторизации. Попробуйте позже.</p></div>`;
+            }
         }
 
         // ---- Load Tests ----
@@ -577,7 +582,29 @@
 
         // ---- Load Dify ----
         async function loadDify() {
-            let html = `
+            let html = '';
+            let latestRunUrl = '#';
+            let latestRequirements = 'Проверка доступности сайта котософт.рф, наличия текста Котософт и элемента Салют';
+
+            // Try to fetch latest run info for dynamic links
+            try {
+                const runsResp = await fetch(`${API_BASE}/actions/runs?per_page=1`);
+                if (runsResp.ok) {
+                    const runsData = await runsResp.json();
+                    const runs = runsData.workflow_runs || [];
+                    if (runs.length > 0) {
+                        latestRunUrl = runs[0].html_url || '#';
+                        // Try to fetch jobs for requirements_text
+                        const jobsResp = await fetch(runs[0].jobs_url);
+                        if (jobsResp.ok) {
+                            const jobsData = await jobsResp.json();
+                            // Look for REQUIREMENTS_TEXT in job logs (best effort)
+                        }
+                    }
+                }
+            } catch(e) { /* use defaults */ }
+
+            html += `
             <div class="info-callout">
                 <span class="info-callout-icon">🤖</span>
                 <div class="info-callout-text">
@@ -647,8 +674,8 @@
                 <a class="artifacts-link" href="https://github.com/thedemaxxx-byte/Kyrsovaya/actions" target="_blank">
                     ⚙️ GitHub Actions Runs
                 </a>
-                <a class="artifacts-link" href="https://github.com/thedemaxxx-byte/Kyrsovaya/actions/runs/28126882764" target="_blank">
-                    📦 Последний запуск (#5) — артефакты
+                <a class="artifacts-link" href="${latestRunUrl}" target="_blank" id="latestRunLink">
+                    📦 Последний запуск — артефакты
                 </a>
             </div>`;
 
