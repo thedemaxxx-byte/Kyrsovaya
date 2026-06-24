@@ -20,6 +20,12 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Linting
         run: flake8 . --count --exit-zero --max-line-length=127 --statistics
+      - name: Write generated test code to file
+        if: github.event_name == 'repository_dispatch'
+        env:
+          TEST_CODE: ${{ github.event.client_payload.test_code }}
+        run: |
+          echo "$TEST_CODE" > test_dynamic.py
       - name: Run Tests for котософт.рф
         run: pytest --alluredir=allure-results --log-cli-level=INFO > pytest_execution.log 2>&1
         continue-on-error: true
