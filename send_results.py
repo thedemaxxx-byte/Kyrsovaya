@@ -2,6 +2,7 @@ import os
 import json
 import requests
 
+
 def main():
     print("Preparing execution logs...")
     # Read pytest execution log
@@ -31,8 +32,12 @@ def main():
         print("Allure results directory not found")
 
     # Limit payload sizes to prevent LLM context overflow
-    log_content_truncated = log_content[-8000:] if log_content else "No logs found"
-    allure_json_str = json.dumps(allure_data)[:8000] if allure_data else "[]"
+    log_content_truncated = (
+        log_content[-8000:] if log_content else "No logs found"
+    )
+    allure_json_str = (
+        json.dumps(allure_data)[:8000] if allure_data else "[]"
+    )
 
     # Send request to Dify Workflow API
     dify_api_key = os.environ.get("DIFY_API_KEY")
@@ -40,17 +45,25 @@ def main():
         print("Error: DIFY_API_KEY environment variable is not set.")
         return
 
+    # Get requirements_text from environment (passed from Dify via
+    # repository_dispatch payload) or use a default description
+    requirements_text = os.environ.get(
+        "REQUIREMENTS_TEXT",
+        "Проверка доступности главной страницы сайта котософт.рф, "
+        "наличия ключевых UI элементов, проверка наличия Салют"
+    )
+
     # Endpoint URL for running a workflow in Dify
     dify_url = "https://api.dify.ai/v1/workflows/run"
-    
+
     headers = {
         "Authorization": f"Bearer {dify_api_key}",
         "Content-Type": "application/json"
     }
-    
+
     payload = {
         "inputs": {
-            "requirements_text": "Проверка доступности главной страницы сайта котософт.рф и наличия ключевых UI элементов",
+            "requirements_text": requirements_text,
             "execution_logs": log_content_truncated,
             "allure_json_data": allure_json_str
         },
@@ -58,6 +71,7 @@ def main():
         "user": "github-actions"
     }
 
+    print(f"Requirements: {requirements_text}")
     print(f"Sending payload to Dify Workflow API at {dify_url}...")
     try:
         response = requests.post(dify_url, headers=headers, json=payload)
@@ -66,6 +80,7 @@ def main():
         print(response.text)
     except Exception as e:
         print(f"Failed to send request to Dify API: {e}")
+
 
 if __name__ == "__main__":
     main()

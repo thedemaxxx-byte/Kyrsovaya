@@ -21,14 +21,23 @@ jobs:
       - name: Run Linting
         run: flake8 . --count --exit-zero --max-line-length=127 --statistics
       - name: Write generated test code to file
-        if: github.event_name == 'repository_dispatch'
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.test_code != ''
         env:
           TEST_CODE: ${{ github.event.client_payload.test_code }}
         run: |
           echo "$TEST_CODE" > test_dynamic.py
+          echo "=== Generated test_dynamic.py ==="
+          cat test_dynamic.py
+          echo "================================="
       - name: Run Tests for котософт.рф
         run: pytest --alluredir=allure-results --log-cli-level=INFO > pytest_execution.log 2>&1
         continue-on-error: true
+      - name: Show test results
+        if: always()
+        run: |
+          echo "=== Pytest Output ==="
+          cat pytest_execution.log || echo "No log file"
+          echo "====================="
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
@@ -44,9 +53,10 @@ jobs:
           path: |
             pytest_execution.log
             allure-results/
+            test_dynamic.py
       - name: Send results to Dify
         if: always()
         env:
           DIFY_API_KEY: ${{ secrets.DIFY_API_KEY }}
+          REQUIREMENTS_TEXT: ${{ github.event.client_payload.requirements_text || 'Проверка доступности сайта котософт.рф, наличия текста Котософт и элемента Салют' }}
         run: python send_results.py
-
