@@ -38,3 +38,9 @@ jobs:
           path: |
             pytest_execution.log
             allure-results/
+      - name: Send results to Dify
+        if: always()
+        env:
+          DIFY_API_KEY: ${{ secrets.DIFY_API_KEY }}
+        run: python send_results.py
+
