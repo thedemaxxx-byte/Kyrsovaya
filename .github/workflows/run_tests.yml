@@ -17,7 +17,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: python -m playwright install --with-deps chromium
       - name: Run Linting
         run: flake8 . --count --exit-zero --max-line-length=127 --statistics
       - name: Write generated test code to file
