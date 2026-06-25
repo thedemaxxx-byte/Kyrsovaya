@@ -384,62 +384,113 @@
         // __LOCAL_DATA_START__
         const LOCAL_DATA = {
   "latest_run": {
-    "id": 28172212563,
-    "run_number": 17,
+    "id": 28172352781,
+    "run_number": 19,
     "display_title": "Dify Test Run",
-    "conclusion": "failure",
-    "created_at": "2026-06-25T13:07:02.284819Z",
-    "run_started_at": "2026-06-25T13:07:02.284819Z",
-    "updated_at": "2026-06-25T13:07:02.284819Z",
+    "conclusion": "success",
+    "created_at": "2026-06-25T13:09:33.365950Z",
+    "run_started_at": "2026-06-25T13:09:33.365950Z",
+    "updated_at": "2026-06-25T13:09:33.365950Z",
     "duration_seconds": 20,
     "head_branch": "main",
     "event": "repository_dispatch",
     "requirements_text": "Проверь структуру проекта. Вот описание и правила из KODA.md:\n\n# КотоСофт — Справочный контекст\n\n## Обзор проекта\n\n**КотоСофт** — это статический веб-сайт, стилизованный под Windows 95 и Netscape Navigator 90-х годов. Вымышленная компания «КотоСофт» предлагает «кошачье» программное обеспечение. Сайт выполнен в ретро-эстетике с элементами Win95: окна, панель задач, меню, бегущие строки, счётчик посещений и т.д.\n\n**Технологии:**\n- Node.js (только для раздачи статических файлов, без фреймворков)\n- Чистый HTML5 + CSS3 (Win95-стилизация, анимации)\n- Vanilla JavaScript (без библиотек)\n- HTTP-сервер built-in (`http.createServer`)\n\n## Структура проекта\n\n```\n.\n├── server.js                    # Основной сервер (относительные пути, ./public)\n├── server-absolute.js           # Альтернативный сервер (абсолютные пути через __dirname)\n├── test-server.js               # Тестовый сервер (возвращает одну HTML-страницу на порту 3001)\n├── launch-server.bat            # Запуск сервера (содержимое не просмотрено)\n├── start-server.bat             # @echo off && node server.js\n├── start-server-absolute.bat    # cd C:\\kotosoft && node server-absolute.js\n├── start-test.bat               # @echo off && node test-server.js\n├── public/                      # Статические файлы сайта\n│   ├── index.html               # Главная страница — «Netscape Navigator» с окном Win95\n│   ├── apps.html                # Страница «Программы» — каталог продуктов\n│   ├── docs.html                # Страница «Документация» — ссылки на документацию\n│   ├── cat-of-day.html          # Страница «Кот дня»\n│   ├── cat-bt-player.html       # Страница «Cat BT Player» — описание продукта\n│   └── style.css                # Все стили в стиле Win95\n└── KODA.md                      # Этот файл\n```\n\n**Пустые/копии:**\n- `public — копия/` — копия директории public (не используется)\n- `.webui_secret_key` — файл секретного ключа (не читать, не коммитить)\n- `desktop.ini` — системный файл Windows\n\n## Сборка и запуск\n\n### Основной сервер (port 3000)\n\n```bash\nnode server.js\n```\n\nили через батник:\n```bash\nstart-server.bat\n```\n\n### Альтернативный сервер с абсолютными путями (port 3000)\n\n```bash\nnode server-absolute.js\n```\n\nили через батник (требует `C:\\kotosoft`):\n```bash\nstart-server-absolute.bat\n```\n\n### Тестовый сервер (port 3001)\n\n```bash\nnode test-server.js\n```\n\nили через батник:\n```bash\nstart-test.bat\n```\n\n### Запуск через батник (Windows)\n\n- `launch-server.bat` — назначение не просмотрено\n- `start-server.bat` — запуск основного сервера\n- `start-server-absolute.bat` — запуск с абсолютными путями\n- `start-test.bat` — запуск тестового сервера\n\n## Правила разработки\n\n- **Стиль:** Ретро Windows 95 / Netscape Navigator 90-х. Всё без фреймворков и зависимостей.\n- **JS:** Vanilla JavaScript, без модулей, без сборщиков.\n- **CSS:** Один файл `style.css`, содержит все стили и анимации.\n- **HTML:** Статические файлы, дублирование структуры (desktop, window, taskbar) на каждой странице.\n- **Отсутствует:** `package.json`, `node_modules`, тесты, линтеры, CI/CD.\n- **Общие JS-паттерны** повторяются на каждой странице:\n  - Часы в панели задач (обновление каждые 30 секунд)\n  - Бегущий курсор в адресной строке\n  - Факт дня (seeded random на основе московской даты)\n  - Анимация сворачивания/разворачивания окна Win95 (Genie-эффект)\n  - Счётчик посещений через `localStorage`\n\n## Особенности реализации\n\n1. **Два сервера:** `server.js` использует относительные пути (нужно запускать из корня), `server-absolute.js` использует `__dirname` и жёстко указывает `public/`.\n2. **Анимации:** Win95 Genie-эффект при сворачивании окна (3D-трансформации perspective + rotateX + scaleY).\n3. **Факт дня:** Определяется seeded random на основе московской даты — один факт в день для всех посетителей.\n4. **Счётчик посещений:** Клиентский, через `localStorage`, сохраняется между сессиями.\n5. **Минимизация:** При загрузке окно изначально свёрнуто — показывается рабочий стол с иконками.",
-    "dify_response": "<think>\nМы получили логи выполнения тестов Pytest и сырые данные Allure-отчета для сайта kotosoft.xn--p1ai (или котocoфт.рф). Из логов видно: 2 теста упали, 5 прошли.\n\nУпавшие тесты:\n1. test_main_page_contains_keywords - assertion error: keyword \"Котософт\" not found on page. В HTML контенте страницы текст \"Котософт\" встречается? Из лога видно, что в title есть \"КотоСофт\", в meta description \"КотоСофт\", в footer \"КотоСофт\". Но в ключевых словах для проверки используется слово \"Котософт\" (без заглавной С?). На странице встречается именно \"КотоСофт\" с заглавной С, а также в некоторых местах \"КотоСофт\" с заглавной С. Ключевое слово \"Котософт\" не найдено, потому что регистр разный. В питоне `in` регистрозависимое сравнение. \"Котософт\" (с маленькой с) vs \"КотоСофт\" (с заглавной С). Это ошибка в тесте: тест ищет точное вхождение \"Котософт\", но на странице используется \"КотоСофт\". Возможно, стоит использовать поиск без учета регистра.\n\n2. test_fact_of_the_day_displayed - assertion error: 'Факт дня' section not found. В HTML страницы, который приведен в логах, не видно блока с текстом \"Факт дня\". На странице есть \"counter-box\", \"visitorCount\", \"footer\" и т.д., но нет упоминания \"Факт дня\". Похоже, что на главной странице отсутствует блок \"Факт дня\". Это может быть реальный баг сайта: блок не отображается, или он динамически подгружается? Но из лога видно, что сайт загружен, и нет никакого блока с таким текстом. Возможно, сайт не соответствует ожидаемой функциональности. Также возможно, что тест ищет по тексту, но блок может быть скрыт или загружается после каких-то действий. В общем, это может быть дефект сайта.\n\nТакже в Allure данных видно, что тест test_fact_of_the_day_displayed упал с аналогичной ошибкой.\n\nОстальные тесты прошли: test_site_reachable, test_desktop_icons_visible, test_taskbar_clock_exists, test_ui_kotosoft_availability, test_api_kotosoft_status. Значит сайт доступен, основные элементы отображаются.\n\nТеперь нужно выполнить Root Cause Analysis и, если есть реальный баг, сформировать баг-репорт.\n\nПервый упавший тест (keywords) - это баг в коде теста: неправильное ключевое слово (регистр). Необходимо исправить тест, использовать регистронезависимый поиск или скорректировать ключевое слово.\n\nВторой упавший тест (Факт дня) - вероятно, реальный дефект сайта, так как на странице отсутствует блок с фактом дня. Но также возможно, что тест ожидает появления блока, который показывается только после каких-то действий (например, нажатия на что-то). Однако судя по описанию теста, он просто проверяет наличие блока на главной странице. В HTML страницы, который отобразился в логах, нет такого блока. Это указывает на то, что сайт не содержит блок \"Факт дня\" в том виде, как ожидается. Это дефект.\n\nНо также стоит учесть, что сайт мог быть изменен, или блок \"Факт дня\" загружается динамически через API. Но в HTML его нет. Поэтому, скорее всего, баг сайта.\n\nФормируем баг-репорт для второго бага. Для первого бага – рекомендация по исправлению теста.\n\nДавай напишем ответ.\n</think>## Root Cause Analysis (RCA)\n\n### Общий вывод: 2 теста упали, 5 прошли. Причины:\n\n1. **`test_main_page_contains_keywords`** — **баг в тесте**. Ключевое слово `\"Котософт\"` (с маленькой 'с') не найдено на странице, хотя фактически на странице встречается `\"КотоСофт\"` (с заглавной 'С'). Используется регистрозависимое сравнение (`in`). Необходимо либо исправить ключевое слово на `\"КотоСофт\"`, либо выполнять проверку без учёта регистра.\n\n2. **`test_fact_of_the_day_displayed`** — **реальный дефект сайта (или недостаток тестового окружения)**. На главной странице отсутствует блок с текстом `\"Факт дня\"`. В логах HTML-контента этот фрагмент не обнаружен, хотя другие элементы (счётчик, иконки, часы) присутствуют.  \n   *Возможные причины:*  \n   - Блок `\"Факт дня\"` был удалён или скрыт на стороне сервера.  \n   - Блок загружается динамически (через XHR/WebSocket) и не успевает появиться к моменту проверки, несмотря на `networkidle`.  \n   - Сайт содержит баг — ожидаемый контент не отображается.\n\n---\n\n## Баг-репорт\n\n```markdown\n[BUG] Блок \"Факт дня\" отсутствует на главной странице\n\n**Описание**  \nНа главной странице сайта `kotosoft.xn--p1ai` не отображается блок с текстом \"Факт дня\". Тест `test_fact_of_the_day_displayed` завершается с ошибкой `'Факт дня' section not found`.\n\n**Шаги для воспроизведения**  \n1. Открыть браузер (Chromium) и перейти на `http://xn--j1aiaaoedp.xn--p1ai`.  \n2. Дождаться полной загрузки страницы (событие `networkidle`).  \n3. Выполнить поиск элемента, содержащего текст \"Факт дня\".  \n\n**Лог ошибки (traceback)**  \n```\ntest_dynamic.py::test_fact_of_the_day_displayed\n...\nfact_block = page.locator(\"text=Факт дня\")\n>       assert fact_block.is_visible(), \"'Факт дня' section not found\"\nE       AssertionError: 'Факт дня' section not found\nE       assert False\nE        +  where False = is_visible()\nE        +    where is_visible = <Locator frame=<Frame name= url='http://xn--j1aiaaoedp.xn--p1ai/'> selector='text=Факт дня'>.is_visible\n```\n\n**Ожидаемый результат**  \nНа главной странице присутствует видимый блок с заголовком \"Факт дня\" и непустым текстом.\n\n**Фактический результат**  \nБлок \"Факт дня\" не найден. В HTML страницы отсутствует соответствующий элемент.\n\n**Дополнительная информация**  \n- Окружение: GitHub Actions, Chromium 148.0.7778.96, Playwright 0.8.0.  \n- Другие тесты (проверка иконок, часов, счётчика, API) проходят успешно.  \n- Скриншот или HTML-дамп страницы доступен в артефактах Allure-отчёта (приложен в логах).\n\n**Приоритет**: High (блокирует проверку функциональности \"Факт дня\")\n\n---\n\n### Рекомендации по исправлению (для разработчика/администратора сайта)  \n- Проверить, добавлен ли блок `\"Факт дня\"` в шаблон `index.html` или загружается через JavaScript.  \n- Убедиться, что сервер возвращает контент для этого блока (возможно, он получается через API и должен быть вставлен до `networkidle`).  \n- Если блок был намеренно удалён — обновить тестовую документацию (убрать этот тест или изменить проверку).\n```\n\n---\n\n## Исправление теста `test_main_page_contains_keywords`\n\n**Проблема**: регистрозависимое сравнение.  \n**Решение**: использовать регулярное выражение с флагом `re.IGNORECASE` или изменить ключевое слово.\n\nПример исправления:\n```python\nimport re\n...\ncontent = page.content()\nassert re.search(r'Котософт', content, re.IGNORECASE), \"Keyword 'Котософт' not found\"\n```",
-    "pytest_logs": "yrsovaya\nplugins: playwright-0.8.0, allure-pytest-2.16.0, base-url-2.1.0\ncollected 7 items\n\ntest_dynamic.py::test_site_reachable PASSED                              [ 14%]\ntest_dynamic.py::test_main_page_contains_keywords FAILED                 [ 28%]\ntest_dynamic.py::test_desktop_icons_visible PASSED                       [ 42%]\ntest_dynamic.py::test_taskbar_clock_exists PASSED                        [ 57%]\ntest_dynamic.py::test_fact_of_the_day_displayed FAILED                   [ 71%]\ntest_kotosoft.py::test_ui_kotosoft_availability[chromium] PASSED         [ 85%]\ntest_kotosoft.py::test_api_kotosoft_status PASSED                        [100%]\n\n=================================== FAILURES ===================================\n_______________________ test_main_page_contains_keywords _______________________\n\nbrowser = <Browser type=<BrowserType name=chromium executable_path=/home/runner/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome> version=148.0.7778.96>\n\n    def test_main_page_contains_keywords(browser):\n        \"\"\"Проверяет наличие ключевых слов на главной странице.\"\"\"\n        page = browser.new_page()\n        page.goto(BASE_URL, wait_until=\"networkidle\")\n        page.evaluate('window.restoreWindow ? window.restoreWindow() : null')\n        page.wait_for_timeout(1000)\n        content = page.content()\n        keywords = [\"Котософт\", \"Факт дня\", \"счётчик\", \"Посещений\", \"Win95\"]\n        for kw in keywords:\n>           assert kw in content, f\"Keyword '{kw}' not found on page\"\nE           AssertionError: Keyword 'Котософт' not found on page\nE           assert 'Котософт' in '<!DOCTYPE html><html lang=\"ru\"><head>\\n  <meta charset=\"UTF-8\">\\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\n  <title>КотоСофт - Netscape Navigator</title>\\n  <meta name=\"description\" content=\"КотоСофт — уютный уголок программного обеспечения, где коты правят балом. Программы, документация и ежедневные котики.\">\\n  <link rel=\"icon\" href=\"data:image/svg+xml,&lt;svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'&gt;&lt;text y=\\'.9em\\' font-size=\\'90\\'&gt;🐱&lt;/text&gt;&lt;/svg&gt;\">\\n  <link rel=\"stylesheet\" href=\"style.css\">\\n</head>\\n\\n<body style=\"\">\\n      <div class=\"desktop-area\" id=\"desktopArea\">\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'index.html\\')\">\\n          <div class=\"desktop-icon-img\">💻</div>\\n          <div class=\"desktop-icon-label\">Мой компьютер</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'apps.html\\')\">\\n          <div class=\"desktop-icon-img\">🐾</div>\\n          <div class=\"desktop-icon-label\">Программы</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'docs.html\\')\">\\n          <div class=\"desktop-icon-img\">📄</div>\\n          <div c...counter-box\" id=\"visitorCount\"><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">1</span></div>\\n        <div class=\"counter-label\">Вы визитёр № <span id=\"vNum\">1</span> с 1 января 1995 г.</div>\\n      </div>\\n      <div class=\"construction-bar\"></div>\\n      <div class=\"webmaster-box\">\\n        <div class=\"netscape-badge\">Best viewed in <b>Netscape Navigator</b> at 800×600</div>\\n      </div>\\n    </div>\\n  <div class=\"footer\"><p>© 1995 (2026) КотоСофт. Все права защищены котами. 🐾</p><p>Сделано на Pentium 1337 с любовью и мурчанием</p></div></div>\\n        </div>\\n\\n        <div class=\"status-bar\">\\n          <span class=\"status-section\">Document: Done</span>\\n          <span class=\"status-section\" style=\"flex:0;min-width:120px;\">🔒 Zone: Internet</span>\\n        </div>\\n      </div>\\n\\n      <div class=\"taskbar\">\\n        <button class=\"start-btn\"><span>🪟</span> Start</button>\\n        <div class=\"taskbar-divider\"></div>\\n        <div class=\"taskbar-task active\">🐱 КотоСофт</div>\\n        <div class=\"taskbar-clock\" id=\"clock\">13:06</div>\\n      </div>\\n    </body></html>'\n\ntest_dynamic.py:31: AssertionError\n________________________ test_fact_of_the_day_displayed ________________________\n\nbrowser = <Browser type=<BrowserType name=chromium executable_path=/home/runner/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome> version=148.0.7778.96>\n\n    def test_fact_of_the_day_displayed(browser):\n        \"\"\"Проверяет, что блок 'Факт дня' присутствует и содержит непустой текст.\"\"\"\n        page = browser.new_page()\n        page.goto(BASE_URL, wait_until=\"networkidle\")\n        page.evaluate('window.restoreWindow ? window.restoreWindow() : null')\n        page.wait_for_timeout(1000)\n        fact_block = page.locator(\"text=Факт дня\")\n>       assert fact_block.is_visible(), \"'Факт дня' section not found\"\nE       AssertionError: 'Факт дня' section not found\nE       assert False\nE        +  where False = is_visible()\nE        +    where is_visible = <Locator frame=<Frame name= url='http://xn--j1aiaaoedp.xn--p1ai/'> selector='text=Факт дня'>.is_visible\n\ntest_dynamic.py:64: AssertionError\n=========================== short test summary info ============================\nFAILED test_dynamic.py::test_main_page_contains_keywords - AssertionError: Keyword 'Котософт' not found on page\nassert 'Котософт' in '<!DOCTYPE html><html lang=\"ru\"><head>\\n  <meta charset=\"UTF-8\">\\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\n  <title>КотоСофт - Netscape Navigator</title>\\n  <meta name=\"description\" content=\"КотоСофт — уютный уголок программного обеспечения, где коты правят балом. Программы, документация и ежедневные котики.\">\\n  <link rel=\"icon\" href=\"data:image/svg+xml,&lt;svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'&gt;&lt;text y=\\'.9em\\' font-size=\\'90\\'&gt;🐱&lt;/text&gt;&lt;/svg&gt;\">\\n  <link rel=\"stylesheet\" href=\"style.css\">\\n</head>\\n\\n<body style=\"\">\\n      <div class=\"desktop-area\" id=\"desktopArea\">\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'index.html\\')\">\\n          <div class=\"desktop-icon-img\">💻</div>\\n          <div class=\"desktop-icon-label\">Мой компьютер</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'apps.html\\')\">\\n          <div class=\"desktop-icon-img\">🐾</div>\\n          <div class=\"desktop-icon-label\">Программы</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'docs.html\\')\">\\n          <div class=\"desktop-icon-img\">📄</div>\\n          <div c...counter-box\" id=\"visitorCount\"><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">1</span></div>\\n        <div class=\"counter-label\">Вы визитёр № <span id=\"vNum\">1</span> с 1 января 1995 г.</div>\\n      </div>\\n      <div class=\"construction-bar\"></div>\\n      <div class=\"webmaster-box\">\\n        <div class=\"netscape-badge\">Best viewed in <b>Netscape Navigator</b> at 800×600</div>\\n      </div>\\n    </div>\\n  <div class=\"footer\"><p>© 1995 (2026) КотоСофт. Все права защищены котами. 🐾</p><p>Сделано на Pentium 1337 с любовью и мурчанием</p></div></div>\\n        </div>\\n\\n        <div class=\"status-bar\">\\n          <span class=\"status-section\">Document: Done</span>\\n          <span class=\"status-section\" style=\"flex:0;min-width:120px;\">🔒 Zone: Internet</span>\\n        </div>\\n      </div>\\n\\n      <div class=\"taskbar\">\\n        <button class=\"start-btn\"><span>🪟</span> Start</button>\\n        <div class=\"taskbar-divider\"></div>\\n        <div class=\"taskbar-task active\">🐱 КотоСофт</div>\\n        <div class=\"taskbar-clock\" id=\"clock\">13:06</div>\\n      </div>\\n    </body></html>'\nFAILED test_dynamic.py::test_fact_of_the_day_displayed - AssertionError: 'Факт дня' section not found\nassert False\n +  where False = is_visible()\n +    where is_visible = <Locator frame=<Frame name= url='http://xn--j1aiaaoedp.xn--p1ai/'> selector='text=Факт дня'>.is_visible\n========================= 2 failed, 5 passed in 23.94s =========================\n",
+    "dify_response": "<think>\nМы получили два набора данных: лог выполнения Pytest и сырые данные Allure-отчета. В логе выполнения: все 5 тестов PASSED за 15.71 секунды. Никаких ошибок или предупреждений. Allure данные также показывают, что все тесты прошли успешно (status \"passed\"), все фикстуры завершились без ошибок. Есть информация о тестах: test_site_accessible, test_page_contains_keyword[chromium], test_page_loads_without_errors[chromium], test_ui_kotosoft_availability[chromium], test_api_kotosoft_status. Никаких следов сбоев. Но пользователь просит выполнить локализацию ошибки (Root Cause Analysis). Возможно, он ожидает, что мы найдем проблему, которой нет? Или подразумевается, что нужно проанализировать общую стабильность? Либо это упражнение, где нужно сказать, что все тесты успешны, и багов не обнаружено. В задании также сказано: \"Если обнаружен реальный баг, сформируй строгий Баг-Репорт\". Поскольку баг не обнаружен, мы должны ответить, что все тесты прошли успешно, ошибок нет. Однако можно также провести анализ временных меток, чтобы убедиться, что все фикстуры отработали корректно, и сделать вывод, что инфраструктура стабильна, код тестов корректен, сайта (котософт.рф) работает (поскольку тест API и UI прошли). \n\nТаким образом, ответ: \"По результатам анализа логов и Allure-отчета все 5 тестов успешно пройдены. Ошибок не выявлено. Инфраструктура стабильна, код тестов не содержит дефектов, целевой сайт функционирует корректно. Баг-репорт не требуется.\"\n\nНо так как пользователь явно попросил \"Выполни локализацию ошибки (Root Cause Analysis)\", надо описать, что мы проверили все этапы, и причина отсутствия ошибки - отсутствие дефектов. Возможно, стоит упомянуть, что временные метки показывают корректную последовательность, фикстуры завершились успешно. \n\nОтвечу в структурированном виде: сначала общий вывод, затем анализ, и, если баг не найден, то указать \"Баг-репорт не формируется\".\n</think>## Анализ результатов выполнения тестов\n\n### Общая информация\n\n- Все **5 тестов** выполнены успешно (PASSED) за **15,71 с**.\n- Allure-отчёт не содержит ни одного теста со статусом `failed`, `broken` или `skipped`.\n- Фикстуры (запуск браузера, контекст, страница, очистка) отработали без ошибок (status `passed`).\n\n### Root Cause Analysis (RCA)\n\nПоскольку тесты прошли штатно, **явной ошибки (бага) нет**. Однако проведём анализ возможных источников сбоев, которые могли бы проявиться, но не проявились:\n\n1. **Инфраструктура CI/CD** (GitHub Actions)\n   - Все шаги сборки и запуска тестов завершены корректно.\n   - Логи не содержат предупреждений о тайм-аутах, нехватке памяти или проблемах с сетью.\n   - Вывод: инфраструктура стабильна.\n\n2. **Код тестов**\n   - Тесты `test_site_accessible`, `test_page_contains_keyword[chromium]`, `test_page_loads_without_errors[chromium]` проверяют доступность сайта, наличие ключевого слова и отсутствие ошибок загрузки.\n   - `test_ui_kotosoft_availability[chromium]` и `test_api_kotosoft_status` проверяют UI-доступность и API-статус сайта `котософт.рф`.\n   - Все тесты используют корректные фикстуры Playwright (браузер, контекст, страница). Баги в тестовом коде не обнаружены.\n   - Вывод: код тестов корректен.\n\n3. **Целевой сайт `котософт.рф`**\n   - UI-тест прошел: страница загружается, элементы видны.\n   - API-тест прошел: сервер возвращает ожидаемый статус.\n   - Вывод: сайт работает без дефектов.\n\n### Заключение\n\n**Реальный дефект (баг) не выявлен.** Все тесты зеленые, инфраструктура стабильна, тестовый код корректен, целевой сайт функционирует.\n\n### Формирование баг-репорта\n\nПоскольку ошибок нет, **баг-репорт не требуется**. Если в будущем появятся падающие тесты, необходимо проанализировать их логи, видео/скриншоты Allure и повторить RCA.",
+    "pytest_logs": "============================= test session starts ==============================\nplatform linux -- Python 3.10.20, pytest-9.1.1, pluggy-1.6.0\nrootdir: /home/runner/work/Kyrsovaya/Kyrsovaya\nplugins: playwright-0.8.0, allure-pytest-2.16.0, base-url-2.1.0\ncollected 5 items\n\ntest_dynamic.py::test_site_accessible PASSED                             [ 20%]\ntest_dynamic.py::test_page_contains_keyword[chromium] PASSED             [ 40%]\ntest_dynamic.py::test_page_loads_without_errors[chromium] PASSED         [ 60%]\ntest_kotosoft.py::test_ui_kotosoft_availability[chromium] PASSED         [ 80%]\ntest_kotosoft.py::test_api_kotosoft_status PASSED                        [100%]\n\n============================== 5 passed in 15.71s ==============================\n",
     "allure_data": [
       {
-        "uuid": "220af437-912c-4c91-a202-334bd45805b3",
+        "uuid": "e7dda126-481b-4fc8-aa18-728538946fe6",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "fb946ad0-2964-4e0c-925a-050ca4d10472",
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327",
+          "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
         ],
         "befores": [
           {
-            "name": "_artifacts_recorder",
+            "name": "delete_output_dir",
             "status": "passed",
-            "start": 1782392797234,
-            "stop": 1782392797234
+            "start": 1782392942998,
+            "stop": 1782392942998
           }
         ],
         "afters": [
           {
-            "name": "_artifacts_recorder::1",
-            "status": "passed",
-            "start": 1782392798631,
-            "stop": 1782392798631
-          },
-          {
-            "name": "_artifacts_recorder::<lambda>",
-            "start": 1782392798631
+            "name": "delete_output_dir::<lambda>",
+            "start": 1782392957822
           }
         ],
-        "start": 1782392797234,
-        "stop": 1782392798631
+        "start": 1782392942998,
+        "stop": 1782392957822
       },
       {
-        "name": "test_fact_of_the_day_displayed",
-        "status": "failed",
-        "statusDetails": {
-          "message": "AssertionError: 'Факт дня' section not found\nassert False\n +  where False = is_visible()\n +    where is_visible = <Locator frame=<Frame name= url='http://xn--j1aiaaoedp.xn--p1ai/'> selector='text=Факт дня'>.is_visible",
-          "trace": "browser = <Browser type=<BrowserType name=chromium executable_path=/home/runner/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome> version=148.0.7778.96>\n\n    def test_fact_of_the_day_displayed(browser):\n        \"\"\"Проверяет, что блок 'Факт дня' присутствует и содержит непустой текст.\"\"\"\n        page = browser.new_page()\n        page.goto(BASE_URL, wait_until=\"networkidle\")\n        page.evaluate('window.restoreWindow ? window.restoreWindow() : null')\n        page.wait_for_timeout(1000)\n        fact_block = page.locator(\"text=Факт дня\")\n>       assert fact_block.is_visible(), \"'Факт дня' section not found\"\nE       AssertionError: 'Факт дня' section not found\nE       assert False\nE        +  where False = is_visible()\nE        +    where is_visible = <Locator frame=<Frame name= url='http://xn--j1aiaaoedp.xn--p1ai/'> selector='text=Факт дня'>.is_visible\n\ntest_dynamic.py:64: AssertionError"
-        },
-        "description": "Проверяет, что блок 'Факт дня' присутствует и содержит непустой текст.",
-        "start": 1782392792701,
-        "stop": 1782392796800,
-        "uuid": "31e5b053-93a7-4a82-a8dc-2df50c70e64c",
-        "historyId": "a9672dad97c9a7e390bf99d65fcccf08",
-        "testCaseId": "a9672dad97c9a7e390bf99d65fcccf08",
-        "fullName": "test_dynamic#test_fact_of_the_day_displayed",
+        "uuid": "51d74a9b-f495-4db2-96f2-07e27ceada91",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "connect_options",
+            "status": "passed",
+            "start": 1782392943783,
+            "stop": 1782392943783
+          }
+        ],
+        "afters": [
+          {
+            "name": "connect_options::<lambda>",
+            "start": 1782392957811
+          }
+        ],
+        "start": 1782392943783,
+        "stop": 1782392957811
+      },
+      {
+        "uuid": "f1666c1e-25c0-4d7a-b7a5-9a0c12244966",
+        "children": [
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "new_context",
+            "status": "passed",
+            "start": 1782392953016,
+            "stop": 1782392953016
+          }
+        ],
+        "afters": [
+          {
+            "name": "new_context::1",
+            "status": "passed",
+            "start": 1782392954884,
+            "stop": 1782392954890
+          },
+          {
+            "name": "new_context::<lambda>",
+            "start": 1782392954890
+          }
+        ],
+        "start": 1782392953016,
+        "stop": 1782392954890
+      },
+      {
+        "name": "test_page_contains_keyword[chromium]",
+        "status": "passed",
+        "parameters": [
+          {
+            "name": "browser_name",
+            "value": "'chromium'"
+          }
+        ],
+        "start": 1782392945504,
+        "stop": 1782392946896,
+        "uuid": "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+        "historyId": "8851d143da21bdf5821daf5e56f7fa26",
+        "testCaseId": "66f052500cd1d25412271b76af4f5aa6",
+        "fullName": "test_dynamic#test_page_contains_keyword",
         "labels": [
           {
             "name": "suite",
@@ -447,11 +498,11 @@
           },
           {
             "name": "host",
-            "value": "runnervm7b5n9"
+            "value": "runnervmmklqx"
           },
           {
             "name": "thread",
-            "value": "3392-MainThread"
+            "value": "3311-MainThread"
           },
           {
             "name": "framework",
@@ -471,150 +522,277 @@
         ]
       },
       {
-        "uuid": "40b890d6-5698-44cd-8806-e19efd9c419c",
-        "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
+        "name": "test_site_accessible",
+        "status": "passed",
+        "start": 1782392942999,
+        "stop": 1782392943463,
+        "uuid": "fb946ad0-2964-4e0c-925a-050ca4d10472",
+        "historyId": "048d6ff6ce0527554c64608eaf3ab19c",
+        "testCaseId": "048d6ff6ce0527554c64608eaf3ab19c",
+        "fullName": "test_dynamic#test_site_accessible",
+        "labels": [
           {
-            "name": "playwright",
-            "status": "passed",
-            "start": 1782392796853,
-            "stop": 1782392797167
-          }
-        ],
-        "afters": [
-          {
-            "name": "playwright::1",
-            "status": "passed",
-            "start": 1782392801562,
-            "stop": 1782392801572
+            "name": "suite",
+            "value": "test_dynamic"
           },
           {
-            "name": "playwright::<lambda>",
-            "start": 1782392801573
+            "name": "host",
+            "value": "runnervmmklqx"
+          },
+          {
+            "name": "thread",
+            "value": "3311-MainThread"
+          },
+          {
+            "name": "framework",
+            "value": "pytest"
+          },
+          {
+            "name": "language",
+            "value": "cpython3"
+          },
+          {
+            "name": "package",
+            "value": "test_dynamic"
           }
         ],
-        "start": 1782392796853,
-        "stop": 1782392801573
+        "titlePath": [
+          "test_dynamic.py"
+        ]
       },
       {
-        "uuid": "8901a5dc-4cbf-40af-977e-467bd22253aa",
+        "uuid": "92352f0f-7b56-4f3c-a6c6-11a472bb65bb",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
         ],
         "befores": [
           {
-            "name": "connect_options",
+            "name": "browser_type_launch_args",
             "status": "passed",
-            "start": 1782392797168,
-            "stop": 1782392797168
+            "start": 1782392943472,
+            "stop": 1782392943472
           }
         ],
         "afters": [
           {
-            "name": "connect_options::<lambda>",
-            "start": 1782392801561
+            "name": "browser_type_launch_args::<lambda>",
+            "start": 1782392957821
           }
         ],
-        "start": 1782392797168,
-        "stop": 1782392801561
-      },
-      {
-        "uuid": "ef350ae9-cf87-476d-9083-f4ea10995263",
-        "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
-          {
-            "name": "launch_browser",
-            "status": "passed",
-            "start": 1782392797168,
-            "stop": 1782392797168
-          }
-        ],
-        "afters": [
-          {
-            "name": "launch_browser::<lambda>",
-            "start": 1782392801561
-          }
-        ],
-        "start": 1782392797168,
-        "stop": 1782392801561
+        "start": 1782392943472,
+        "stop": 1782392957821
       },
       {
         "name": "GitHub Actions",
         "type": "github",
         "reportName": "Allure Report with history",
         "url": "https://thedemaxxx-byte.github.io/Kyrsovaya",
-        "reportUrl": "https://thedemaxxx-byte.github.io/Kyrsovaya/17",
-        "buildUrl": "https://github.com/thedemaxxx-byte/Kyrsovaya/actions/runs/28172212563",
-        "buildName": "GitHub Actions Run #28172212563",
-        "buildOrder": "17"
+        "reportUrl": "https://thedemaxxx-byte.github.io/Kyrsovaya/19",
+        "buildUrl": "https://github.com/thedemaxxx-byte/Kyrsovaya/actions/runs/28172352781",
+        "buildName": "GitHub Actions Run #28172352781",
+        "buildOrder": "19"
       },
       {
-        "uuid": "261b6300-c2c5-44d6-9487-a4c935d2714b",
+        "uuid": "aafad057-fc38-410a-b36f-4d3019e009f8",
         "children": [
-          "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-          "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-          "fd01d09d-dee1-48af-a880-aef91063b9d7",
-          "31e5b053-93a7-4a82-a8dc-2df50c70e64c"
+          "d9228844-c8da-444c-8202-96b4e2dda93f"
+        ],
+        "befores": [
+          {
+            "name": "output_path",
+            "status": "passed",
+            "start": 1782392946909,
+            "stop": 1782392946909
+          }
+        ],
+        "afters": [
+          {
+            "name": "output_path::<lambda>",
+            "start": 1782392953014
+          }
+        ],
+        "start": 1782392946909,
+        "stop": 1782392953014
+      },
+      {
+        "uuid": "644add60-6412-4ed4-88a3-319fe5fe4fcc",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "playwright",
+            "status": "passed",
+            "start": 1782392943472,
+            "stop": 1782392943783
+          }
+        ],
+        "afters": [
+          {
+            "name": "playwright::1",
+            "status": "passed",
+            "start": 1782392957812,
+            "stop": 1782392957820
+          },
+          {
+            "name": "playwright::<lambda>",
+            "start": 1782392957820
+          }
+        ],
+        "start": 1782392943472,
+        "stop": 1782392957820
+      },
+      {
+        "uuid": "722c8bce-6b61-4f2d-8ace-31f36bd5f367",
+        "children": [
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "_artifacts_recorder",
+            "status": "passed",
+            "start": 1782392953016,
+            "stop": 1782392953016
+          }
+        ],
+        "afters": [
+          {
+            "name": "_artifacts_recorder::1",
+            "status": "passed",
+            "start": 1782392954890,
+            "stop": 1782392954890
+          },
+          {
+            "name": "_artifacts_recorder::<lambda>",
+            "start": 1782392954890
+          }
+        ],
+        "start": 1782392953016,
+        "stop": 1782392954890
+      },
+      {
+        "uuid": "57bf90ac-a2cc-4d40-96b8-31f778127e44",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+        ],
+        "befores": [
+          {
+            "name": "_artifacts_recorder",
+            "status": "passed",
+            "start": 1782392945466,
+            "stop": 1782392945467
+          }
+        ],
+        "afters": [
+          {
+            "name": "_artifacts_recorder::1",
+            "status": "passed",
+            "start": 1782392946907,
+            "stop": 1782392946907
+          },
+          {
+            "name": "_artifacts_recorder::<lambda>",
+            "start": 1782392946907
+          }
+        ],
+        "start": 1782392945466,
+        "stop": 1782392946907
+      },
+      {
+        "uuid": "af027f5c-2a0d-4c1a-8688-68518b35e779",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+        ],
+        "befores": [
+          {
+            "name": "page",
+            "status": "passed",
+            "start": 1782392945474,
+            "stop": 1782392945503
+          }
+        ],
+        "afters": [
+          {
+            "name": "page::<lambda>",
+            "start": 1782392946896
+          }
+        ],
+        "start": 1782392945474,
+        "stop": 1782392946896
+      },
+      {
+        "uuid": "0305197e-ebe5-44ef-8985-66f4cc2ec6fd",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "browser_context_args",
+            "status": "passed",
+            "start": 1782392945465,
+            "stop": 1782392945465
+          }
+        ],
+        "afters": [
+          {
+            "name": "browser_context_args::<lambda>",
+            "start": 1782392957786
+          }
+        ],
+        "start": 1782392945465,
+        "stop": 1782392957786
+      },
+      {
+        "uuid": "e705e405-2b32-4cfb-a6f9-4852dd27525e",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
         ],
         "befores": [
           {
             "name": "browser",
             "status": "passed",
-            "start": 1782392778297,
-            "stop": 1782392779380
+            "start": 1782392943783,
+            "stop": 1782392945464
           }
         ],
         "afters": [
           {
             "name": "browser::1",
             "status": "passed",
-            "start": 1782392796806,
-            "stop": 1782392796851
+            "start": 1782392957787,
+            "stop": 1782392957811
           },
           {
             "name": "browser::<lambda>",
-            "start": 1782392796851
+            "start": 1782392957811
           }
         ],
-        "start": 1782392778297,
-        "stop": 1782392796851
+        "start": 1782392943783,
+        "stop": 1782392957811
       },
       {
-        "uuid": "794c5262-0da2-4781-af3e-2dbeb6ca58a0",
-        "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
-          {
-            "name": "context",
-            "status": "passed",
-            "start": 1782392797235,
-            "stop": 1782392797243
-          }
-        ],
-        "afters": [
-          {
-            "name": "context::<lambda>",
-            "start": 1782392798621
-          }
-        ],
-        "start": 1782392797235,
-        "stop": 1782392798621
-      },
-      {
-        "name": "test_taskbar_clock_exists",
+        "name": "test_page_loads_without_errors[chromium]",
         "status": "passed",
-        "description": "Проверяет наличие элемента часов в панели задач.",
-        "start": 1782392788588,
-        "stop": 1782392792699,
-        "uuid": "fd01d09d-dee1-48af-a880-aef91063b9d7",
-        "historyId": "b1a87695fe7568f4a905494a33f05e1e",
-        "testCaseId": "b1a87695fe7568f4a905494a33f05e1e",
-        "fullName": "test_dynamic#test_taskbar_clock_exists",
+        "parameters": [
+          {
+            "name": "browser_name",
+            "value": "'chromium'"
+          }
+        ],
+        "start": 1782392946954,
+        "stop": 1782392953004,
+        "uuid": "d9228844-c8da-444c-8202-96b4e2dda93f",
+        "historyId": "e7da6f61e19478427f524a76171b728c",
+        "testCaseId": "d7e664760262084dfff452b00603a1d2",
+        "fullName": "test_dynamic#test_page_loads_without_errors",
         "labels": [
           {
             "name": "suite",
@@ -622,11 +800,11 @@
           },
           {
             "name": "host",
-            "value": "runnervm7b5n9"
+            "value": "runnervmmklqx"
           },
           {
             "name": "thread",
-            "value": "3392-MainThread"
+            "value": "3311-MainThread"
           },
           {
             "name": "framework",
@@ -646,70 +824,98 @@
         ]
       },
       {
-        "uuid": "938080cd-27dc-4b15-ac36-dee1a78a74c5",
+        "uuid": "3254f2b6-56bd-4c79-b87f-b467b55712b2",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "d9228844-c8da-444c-8202-96b4e2dda93f"
         ],
         "befores": [
           {
-            "name": "page",
+            "name": "context",
             "status": "passed",
-            "start": 1782392797243,
-            "stop": 1782392797274
+            "start": 1782392946910,
+            "stop": 1782392946914
           }
         ],
         "afters": [
           {
-            "name": "page::<lambda>",
-            "start": 1782392798621
+            "name": "context::<lambda>",
+            "start": 1782392953005
           }
         ],
-        "start": 1782392797243,
-        "stop": 1782392798621
+        "start": 1782392946910,
+        "stop": 1782392953005
       },
       {
-        "uuid": "866fbc0c-5a42-4aa7-ade4-7d36258e3577",
+        "uuid": "6be35be7-899a-4e83-b556-c71cf4d1d93d",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
         ],
         "befores": [
           {
-            "name": "browser_context_args",
+            "name": "output_path",
             "status": "passed",
-            "start": 1782392797233,
-            "stop": 1782392797234
+            "start": 1782392945466,
+            "stop": 1782392945466
           }
         ],
         "afters": [
           {
-            "name": "browser_context_args::<lambda>",
-            "start": 1782392801537
+            "name": "output_path::<lambda>",
+            "start": 1782392946907
           }
         ],
-        "start": 1782392797233,
-        "stop": 1782392801537
+        "start": 1782392945466,
+        "stop": 1782392946907
       },
       {
-        "uuid": "3c1676a8-d891-4685-ba9b-6eb499f693fe",
+        "uuid": "459237b6-07c9-434a-9963-aa626b4ed35b",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "fb946ad0-2964-4e0c-925a-050ca4d10472",
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327",
+          "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
         ],
         "befores": [
           {
-            "name": "browser_context_args",
+            "name": "_verify_url",
             "status": "passed",
-            "start": 1782392797233,
-            "stop": 1782392797233
+            "start": 1782392942998,
+            "stop": 1782392942998
           }
         ],
         "afters": [
           {
-            "name": "browser_context_args::<lambda>",
-            "start": 1782392801537
+            "name": "_verify_url::<lambda>",
+            "start": 1782392957821
           }
         ],
-        "start": 1782392797233,
-        "stop": 1782392801537
+        "start": 1782392942998,
+        "stop": 1782392957821
+      },
+      {
+        "uuid": "22252249-2745-4ff3-8afa-fd52a41d3437",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "browser_type_launch_args",
+            "status": "passed",
+            "start": 1782392943472,
+            "stop": 1782392943472
+          }
+        ],
+        "afters": [
+          {
+            "name": "browser_type_launch_args::<lambda>",
+            "start": 1782392957821
+          }
+        ],
+        "start": 1782392943472,
+        "stop": 1782392957821
       },
       {
         "name": "test_api_kotosoft_status",
@@ -718,13 +924,13 @@
         "attachments": [
           {
             "name": "stdout",
-            "source": "facc5880-e6b5-47ab-a9e0-60dfe5879b98-attachment.txt",
+            "source": "bcefbc7e-4ecf-4596-8126-48bd522d63e7-attachment.txt",
             "type": "text/plain"
           }
         ],
-        "start": 1782392798633,
-        "stop": 1782392801536,
-        "uuid": "074c671e-d426-4c15-ae91-e21e9eba9cda",
+        "start": 1782392954893,
+        "stop": 1782392957785,
+        "uuid": "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76",
         "historyId": "47dc16d2d6990dd5c841b4fcd2d5092e",
         "testCaseId": "47dc16d2d6990dd5c841b4fcd2d5092e",
         "fullName": "test_kotosoft#test_api_kotosoft_status",
@@ -735,11 +941,11 @@
           },
           {
             "name": "host",
-            "value": "runnervm7b5n9"
+            "value": "runnervmmklqx"
           },
           {
             "name": "thread",
-            "value": "3392-MainThread"
+            "value": "3311-MainThread"
           },
           {
             "name": "framework",
@@ -759,66 +965,158 @@
         ]
       },
       {
-        "name": "test_site_reachable",
-        "status": "passed",
-        "description": "Проверяет, что сайт отвечает кодом 200.",
-        "start": 1782392777838,
-        "stop": 1782392778292,
-        "uuid": "8720d51c-befa-4aab-9ada-1e352fd59976",
-        "historyId": "1c7a7f5e59826b1c975837df27810904",
-        "testCaseId": "1c7a7f5e59826b1c975837df27810904",
-        "fullName": "test_dynamic#test_site_reachable",
-        "labels": [
-          {
-            "name": "suite",
-            "value": "test_dynamic"
-          },
-          {
-            "name": "host",
-            "value": "runnervm7b5n9"
-          },
-          {
-            "name": "thread",
-            "value": "3392-MainThread"
-          },
-          {
-            "name": "framework",
-            "value": "pytest"
-          },
-          {
-            "name": "language",
-            "value": "cpython3"
-          },
-          {
-            "name": "package",
-            "value": "test_dynamic"
-          }
-        ],
-        "titlePath": [
-          "test_dynamic.py"
-        ]
-      },
-      {
-        "uuid": "583b1792-b827-4672-a6bd-c85bb0e18134",
+        "uuid": "c287fc43-47e1-4bbe-8d59-2d50b5805822",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "fb946ad0-2964-4e0c-925a-050ca4d10472",
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327",
+          "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
         ],
         "befores": [
           {
-            "name": "browser_type",
+            "name": "base_url",
             "status": "passed",
-            "start": 1782392797167,
-            "stop": 1782392797167
+            "start": 1782392942998,
+            "stop": 1782392942998
           }
         ],
         "afters": [
           {
-            "name": "browser_type::<lambda>",
-            "start": 1782392801561
+            "name": "base_url::<lambda>",
+            "start": 1782392957821
           }
         ],
-        "start": 1782392797167,
-        "stop": 1782392801562
+        "start": 1782392942998,
+        "stop": 1782392957821
+      },
+      {
+        "uuid": "01c9d36e-0f60-4c85-8a76-bc743d67169d",
+        "children": [
+          "d9228844-c8da-444c-8202-96b4e2dda93f"
+        ],
+        "befores": [
+          {
+            "name": "_artifacts_recorder",
+            "status": "passed",
+            "start": 1782392946909,
+            "stop": 1782392946909
+          }
+        ],
+        "afters": [
+          {
+            "name": "_artifacts_recorder::1",
+            "status": "passed",
+            "start": 1782392953013,
+            "stop": 1782392953013
+          },
+          {
+            "name": "_artifacts_recorder::<lambda>",
+            "start": 1782392953013
+          }
+        ],
+        "start": 1782392946909,
+        "stop": 1782392953013
+      },
+      {
+        "uuid": "3a1ed3de-78f3-416b-8536-f453f75c790a",
+        "children": [
+          "fb946ad0-2964-4e0c-925a-050ca4d10472",
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327",
+          "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
+        ],
+        "befores": [
+          {
+            "name": "pytestconfig",
+            "status": "passed",
+            "start": 1782392942998,
+            "stop": 1782392942998
+          }
+        ],
+        "afters": [
+          {
+            "name": "pytestconfig::<lambda>",
+            "start": 1782392957822
+          }
+        ],
+        "start": 1782392942998,
+        "stop": 1782392957822
+      },
+      {
+        "uuid": "070ba681-5fa2-4af5-a69f-c066f1e6f575",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+        ],
+        "befores": [
+          {
+            "name": "context",
+            "status": "passed",
+            "start": 1782392945467,
+            "stop": 1782392945474
+          }
+        ],
+        "afters": [
+          {
+            "name": "context::<lambda>",
+            "start": 1782392946897
+          }
+        ],
+        "start": 1782392945467,
+        "stop": 1782392946897
+      },
+      {
+        "uuid": "ba579289-1def-4802-a5df-8f6860687162",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "_pw_artifacts_folder",
+            "status": "passed",
+            "start": 1782392945465,
+            "stop": 1782392945465
+          }
+        ],
+        "afters": [
+          {
+            "name": "_pw_artifacts_folder::1",
+            "status": "passed",
+            "start": 1782392957786,
+            "stop": 1782392957786
+          },
+          {
+            "name": "_pw_artifacts_folder::<lambda>",
+            "start": 1782392957786
+          }
+        ],
+        "start": 1782392945465,
+        "stop": 1782392957786
+      },
+      {
+        "uuid": "8c2ecdff-fc5c-4c10-8b10-4b93f9a6146d",
+        "children": [
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "page",
+            "status": "passed",
+            "start": 1782392953020,
+            "stop": 1782392953045
+          }
+        ],
+        "afters": [
+          {
+            "name": "page::<lambda>",
+            "start": 1782392954883
+          }
+        ],
+        "start": 1782392953020,
+        "stop": 1782392954883
       },
       {
         "name": "test_ui_kotosoft_availability[chromium]",
@@ -827,7 +1125,7 @@
         "attachments": [
           {
             "name": "stdout",
-            "source": "7bdf3a6c-3d76-459d-8696-d9f0a2e465c2-attachment.txt",
+            "source": "7de0a15c-3ccf-4363-a6cf-8335989fe0fb-attachment.txt",
             "type": "text/plain"
           }
         ],
@@ -837,9 +1135,9 @@
             "value": "'chromium'"
           }
         ],
-        "start": 1782392797275,
-        "stop": 1782392798620,
-        "uuid": "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b",
+        "start": 1782392953045,
+        "stop": 1782392954883,
+        "uuid": "0f3a8b40-9247-4937-88ae-a78fa5461327",
         "historyId": "7d845ff2837860f752b95f3605764917",
         "testCaseId": "58ea925eb039fdc0dd423e7673b3773b",
         "fullName": "test_kotosoft#test_ui_kotosoft_availability",
@@ -850,11 +1148,11 @@
           },
           {
             "name": "host",
-            "value": "runnervm7b5n9"
+            "value": "runnervmmklqx"
           },
           {
             "name": "thread",
-            "value": "3392-MainThread"
+            "value": "3311-MainThread"
           },
           {
             "name": "framework",
@@ -874,450 +1172,1374 @@
         ]
       },
       {
-        "uuid": "77716993-3924-4e2b-a8c6-5f0b134b7a32",
+        "uuid": "bdaf58ba-21f9-44d9-ae69-72eb14103d46",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
-          {
-            "name": "browser_type_launch_args",
-            "status": "passed",
-            "start": 1782392796853,
-            "stop": 1782392796853
-          }
-        ],
-        "afters": [
-          {
-            "name": "browser_type_launch_args::<lambda>",
-            "start": 1782392801573
-          }
-        ],
-        "start": 1782392796853,
-        "stop": 1782392801573
-      },
-      {
-        "uuid": "4e578af5-d34e-43c7-b38b-f01dcc8e2f09",
-        "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
         ],
         "befores": [
           {
             "name": "output_path",
             "status": "passed",
-            "start": 1782392797234,
-            "stop": 1782392797234
+            "start": 1782392953016,
+            "stop": 1782392953016
           }
         ],
         "afters": [
           {
             "name": "output_path::<lambda>",
-            "start": 1782392798631
+            "start": 1782392954891
           }
         ],
-        "start": 1782392797234,
-        "stop": 1782392798631
+        "start": 1782392953016,
+        "stop": 1782392954891
       },
       {
-        "uuid": "a83a3b30-9077-4e9e-8ed1-b76e3e6a996d",
+        "uuid": "d0ad0666-cb80-4688-9fca-7aaa37e6cf6e",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
         ],
         "befores": [
           {
-            "name": "browser_type_launch_args",
+            "name": "browser_context_args",
             "status": "passed",
-            "start": 1782392796853,
-            "stop": 1782392796853
+            "start": 1782392945466,
+            "stop": 1782392945466
           }
         ],
         "afters": [
           {
-            "name": "browser_type_launch_args::<lambda>",
-            "start": 1782392801573
+            "name": "browser_context_args::<lambda>",
+            "start": 1782392957785
           }
         ],
-        "start": 1782392796853,
-        "stop": 1782392801573
+        "start": 1782392945466,
+        "stop": 1782392957785
       },
       {
-        "uuid": "f044b538-7f4f-4771-b479-59e35a7f518a",
-        "children": [
-          "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-          "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-          "fd01d09d-dee1-48af-a880-aef91063b9d7",
-          "31e5b053-93a7-4a82-a8dc-2df50c70e64c",
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
-          {
-            "name": "browser",
-            "status": "passed",
-            "start": 1782392797168,
-            "stop": 1782392797232
-          }
-        ],
-        "afters": [
-          {
-            "name": "browser::1",
-            "status": "passed",
-            "start": 1782392801538,
-            "stop": 1782392801561
-          },
-          {
-            "name": "browser::<lambda>",
-            "start": 1782392801561
-          }
-        ],
-        "start": 1782392797168,
-        "stop": 1782392801561
-      },
-      {
-        "uuid": "e6a823cf-c64b-43e2-aa84-a6a6bfc8e818",
-        "children": [
-          "8720d51c-befa-4aab-9ada-1e352fd59976",
-          "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-          "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-          "fd01d09d-dee1-48af-a880-aef91063b9d7",
-          "31e5b053-93a7-4a82-a8dc-2df50c70e64c",
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b",
-          "074c671e-d426-4c15-ae91-e21e9eba9cda"
-        ],
-        "befores": [
-          {
-            "name": "pytestconfig",
-            "status": "passed",
-            "start": 1782392777837,
-            "stop": 1782392777837
-          }
-        ],
-        "afters": [
-          {
-            "name": "pytestconfig::<lambda>",
-            "start": 1782392801574
-          }
-        ],
-        "start": 1782392777837,
-        "stop": 1782392801574
-      },
-      {
-        "uuid": "05738fa8-4c0b-4ef8-a4ae-b822d6dd4335",
-        "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
-          {
-            "name": "device",
-            "status": "passed",
-            "start": 1782392797233,
-            "stop": 1782392797233
-          }
-        ],
-        "afters": [
-          {
-            "name": "device::<lambda>",
-            "start": 1782392801538
-          }
-        ],
-        "start": 1782392797233,
-        "stop": 1782392801538
-      },
-      {
-        "uuid": "0b408113-a393-49f8-b477-60eb584c5170",
-        "children": [
-          "8720d51c-befa-4aab-9ada-1e352fd59976",
-          "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-          "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-          "fd01d09d-dee1-48af-a880-aef91063b9d7",
-          "31e5b053-93a7-4a82-a8dc-2df50c70e64c",
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b",
-          "074c671e-d426-4c15-ae91-e21e9eba9cda"
-        ],
-        "befores": [
-          {
-            "name": "delete_output_dir",
-            "status": "passed",
-            "start": 1782392777837,
-            "stop": 1782392777837
-          }
-        ],
-        "afters": [
-          {
-            "name": "delete_output_dir::<lambda>",
-            "start": 1782392801574
-          }
-        ],
-        "start": 1782392777837,
-        "stop": 1782392801574
-      },
-      {
-        "uuid": "43f63b63-cbe9-4b21-89db-0086815f95ae",
+        "uuid": "e57a26ca-5b07-4954-be9d-fb9a08921e23",
         "befores": [
           {
             "name": "browser_name",
             "status": "passed",
-            "start": 1782392797167,
-            "stop": 1782392797167
+            "start": 1782392943783,
+            "stop": 1782392943783
           }
         ],
         "afters": [
           {
             "name": "browser_name::<lambda>",
-            "start": 1782392801562
+            "start": 1782392957812
           }
         ],
-        "start": 1782392797167,
-        "stop": 1782392801562
+        "start": 1782392943783,
+        "stop": 1782392957812
       },
       {
-        "uuid": "f91896fa-d465-4997-b698-64e6b40f141d",
+        "uuid": "5d74bfcb-1fdd-4b14-9b5d-efb819b1969f",
         "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
-        ],
-        "befores": [
-          {
-            "name": "_pw_artifacts_folder",
-            "status": "passed",
-            "start": 1782392797233,
-            "stop": 1782392797233
-          }
-        ],
-        "afters": [
-          {
-            "name": "_pw_artifacts_folder::1",
-            "status": "passed",
-            "start": 1782392801537,
-            "stop": 1782392801537
-          },
-          {
-            "name": "_pw_artifacts_folder::<lambda>",
-            "start": 1782392801538
-          }
-        ],
-        "start": 1782392797233,
-        "stop": 1782392801538
-      },
-      {
-        "uuid": "6565423e-7fc9-455d-88b1-ce1f5086e2fa",
-        "children": [
-          "8720d51c-befa-4aab-9ada-1e352fd59976",
-          "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-          "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-          "fd01d09d-dee1-48af-a880-aef91063b9d7",
-          "31e5b053-93a7-4a82-a8dc-2df50c70e64c",
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b",
-          "074c671e-d426-4c15-ae91-e21e9eba9cda"
-        ],
-        "befores": [
-          {
-            "name": "_verify_url",
-            "status": "passed",
-            "start": 1782392777837,
-            "stop": 1782392777837
-          }
-        ],
-        "afters": [
-          {
-            "name": "_verify_url::<lambda>",
-            "start": 1782392801573
-          }
-        ],
-        "start": 1782392777837,
-        "stop": 1782392801573
-      },
-      {
-        "uuid": "c8ca23c6-934b-4bf4-847d-8710583fc026",
-        "children": [
-          "8720d51c-befa-4aab-9ada-1e352fd59976",
-          "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-          "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-          "fd01d09d-dee1-48af-a880-aef91063b9d7",
-          "31e5b053-93a7-4a82-a8dc-2df50c70e64c",
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b",
-          "074c671e-d426-4c15-ae91-e21e9eba9cda"
-        ],
-        "befores": [
-          {
-            "name": "base_url",
-            "status": "passed",
-            "start": 1782392777837,
-            "stop": 1782392777837
-          }
-        ],
-        "afters": [
-          {
-            "name": "base_url::<lambda>",
-            "start": 1782392801574
-          }
-        ],
-        "start": 1782392777837,
-        "stop": 1782392801574
-      },
-      {
-        "name": "test_desktop_icons_visible",
-        "status": "passed",
-        "description": "Проверяет, что на рабочем столе отображаются иконки (любые элементы с классом 'desktop-icon').",
-        "start": 1782392784484,
-        "stop": 1782392788585,
-        "uuid": "5d403e42-20fe-4837-9a6f-a9827b6b1bcf",
-        "historyId": "a4f3cf4b11e220c904501078b337020f",
-        "testCaseId": "a4f3cf4b11e220c904501078b337020f",
-        "fullName": "test_dynamic#test_desktop_icons_visible",
-        "labels": [
-          {
-            "name": "suite",
-            "value": "test_dynamic"
-          },
-          {
-            "name": "host",
-            "value": "runnervm7b5n9"
-          },
-          {
-            "name": "thread",
-            "value": "3392-MainThread"
-          },
-          {
-            "name": "framework",
-            "value": "pytest"
-          },
-          {
-            "name": "language",
-            "value": "cpython3"
-          },
-          {
-            "name": "package",
-            "value": "test_dynamic"
-          }
-        ],
-        "titlePath": [
-          "test_dynamic.py"
-        ]
-      },
-      {
-        "uuid": "f16e9854-1691-4f46-a207-afe463ea6d0e",
-        "children": [
-          "28f56f3d-1d25-4c2a-a0a9-30ff95dbeb8b"
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
         ],
         "befores": [
           {
             "name": "new_context",
             "status": "passed",
-            "start": 1782392797235,
-            "stop": 1782392797235
+            "start": 1782392945467,
+            "stop": 1782392945467
           }
         ],
         "afters": [
           {
             "name": "new_context::1",
             "status": "passed",
-            "start": 1782392798621,
-            "stop": 1782392798630
+            "start": 1782392946897,
+            "stop": 1782392946906
           },
           {
             "name": "new_context::<lambda>",
-            "start": 1782392798630
+            "start": 1782392946906
           }
         ],
-        "start": 1782392797235,
-        "stop": 1782392798630
+        "start": 1782392945467,
+        "stop": 1782392946906
       },
       {
-        "name": "test_main_page_contains_keywords",
-        "status": "failed",
-        "statusDetails": {
-          "message": "AssertionError: Keyword 'Котософт' not found on page\nassert 'Котософт' in '<!DOCTYPE html><html lang=\"ru\"><head>\\n  <meta charset=\"UTF-8\">\\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\n  <title>КотоСофт - Netscape Navigator</title>\\n  <meta name=\"description\" content=\"КотоСофт — уютный уголок программного обеспечения, где коты правят балом. Программы, документация и ежедневные котики.\">\\n  <link rel=\"icon\" href=\"data:image/svg+xml,&lt;svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'&gt;&lt;text y=\\'.9em\\' font-size=\\'90\\'&gt;🐱&lt;/text&gt;&lt;/svg&gt;\">\\n  <link rel=\"stylesheet\" href=\"style.css\">\\n</head>\\n\\n<body style=\"\">\\n      <div class=\"desktop-area\" id=\"desktopArea\">\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'index.html\\')\">\\n          <div class=\"desktop-icon-img\">💻</div>\\n          <div class=\"desktop-icon-label\">Мой компьютер</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'apps.html\\')\">\\n          <div class=\"desktop-icon-img\">🐾</div>\\n          <div class=\"desktop-icon-label\">Программы</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'docs.html\\')\">\\n          <div class=\"desktop-icon-img\">📄</div>\\n          <div c...counter-box\" id=\"visitorCount\"><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">1</span></div>\\n        <div class=\"counter-label\">Вы визитёр № <span id=\"vNum\">1</span> с 1 января 1995 г.</div>\\n      </div>\\n      <div class=\"construction-bar\"></div>\\n      <div class=\"webmaster-box\">\\n        <div class=\"netscape-badge\">Best viewed in <b>Netscape Navigator</b> at 800×600</div>\\n      </div>\\n    </div>\\n  <div class=\"footer\"><p>© 1995 (2026) КотоСофт. Все права защищены котами. 🐾</p><p>Сделано на Pentium 1337 с любовью и мурчанием</p></div></div>\\n        </div>\\n\\n        <div class=\"status-bar\">\\n          <span class=\"status-section\">Document: Done</span>\\n          <span class=\"status-section\" style=\"flex:0;min-width:120px;\">🔒 Zone: Internet</span>\\n        </div>\\n      </div>\\n\\n      <div class=\"taskbar\">\\n        <button class=\"start-btn\"><span>🪟</span> Start</button>\\n        <div class=\"taskbar-divider\"></div>\\n        <div class=\"taskbar-task active\">🐱 КотоСофт</div>\\n        <div class=\"taskbar-clock\" id=\"clock\">13:06</div>\\n      </div>\\n    </body></html>'",
-          "trace": "browser = <Browser type=<BrowserType name=chromium executable_path=/home/runner/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome> version=148.0.7778.96>\n\n    def test_main_page_contains_keywords(browser):\n        \"\"\"Проверяет наличие ключевых слов на главной странице.\"\"\"\n        page = browser.new_page()\n        page.goto(BASE_URL, wait_until=\"networkidle\")\n        page.evaluate('window.restoreWindow ? window.restoreWindow() : null')\n        page.wait_for_timeout(1000)\n        content = page.content()\n        keywords = [\"Котософт\", \"Факт дня\", \"счётчик\", \"Посещений\", \"Win95\"]\n        for kw in keywords:\n>           assert kw in content, f\"Keyword '{kw}' not found on page\"\nE           AssertionError: Keyword 'Котософт' not found on page\nE           assert 'Котософт' in '<!DOCTYPE html><html lang=\"ru\"><head>\\n  <meta charset=\"UTF-8\">\\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\n  <title>КотоСофт - Netscape Navigator</title>\\n  <meta name=\"description\" content=\"КотоСофт — уютный уголок программного обеспечения, где коты правят балом. Программы, документация и ежедневные котики.\">\\n  <link rel=\"icon\" href=\"data:image/svg+xml,&lt;svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'&gt;&lt;text y=\\'.9em\\' font-size=\\'90\\'&gt;🐱&lt;/text&gt;&lt;/svg&gt;\">\\n  <link rel=\"stylesheet\" href=\"style.css\">\\n</head>\\n\\n<body style=\"\">\\n      <div class=\"desktop-area\" id=\"desktopArea\">\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'index.html\\')\">\\n          <div class=\"desktop-icon-img\">💻</div>\\n          <div class=\"desktop-icon-label\">Мой компьютер</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'apps.html\\')\">\\n          <div class=\"desktop-icon-img\">🐾</div>\\n          <div class=\"desktop-icon-label\">Программы</div>\\n        </div>\\n        <div class=\"desktop-icon\" ondblclick=\"navigateTo(\\'docs.html\\')\">\\n          <div class=\"desktop-icon-img\">📄</div>\\n          <div c...counter-box\" id=\"visitorCount\"><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">0</span><span class=\"digit\">1</span></div>\\n        <div class=\"counter-label\">Вы визитёр № <span id=\"vNum\">1</span> с 1 января 1995 г.</div>\\n      </div>\\n      <div class=\"construction-bar\"></div>\\n      <div class=\"webmaster-box\">\\n        <div class=\"netscape-badge\">Best viewed in <b>Netscape Navigator</b> at 800×600</div>\\n      </div>\\n    </div>\\n  <div class=\"footer\"><p>© 1995 (2026) КотоСофт. Все права защищены котами. 🐾</p><p>Сделано на Pentium 1337 с любовью и мурчанием</p></div></div>\\n        </div>\\n\\n        <div class=\"status-bar\">\\n          <span class=\"status-section\">Document: Done</span>\\n          <span class=\"status-section\" style=\"flex:0;min-width:120px;\">🔒 Zone: Internet</span>\\n        </div>\\n      </div>\\n\\n      <div class=\"taskbar\">\\n        <button class=\"start-btn\"><span>🪟</span> Start</button>\\n        <div class=\"taskbar-divider\"></div>\\n        <div class=\"taskbar-task active\">🐱 КотоСофт</div>\\n        <div class=\"taskbar-clock\" id=\"clock\">13:06</div>\\n      </div>\\n    </body></html>'\n\ntest_dynamic.py:31: AssertionError"
-        },
-        "description": "Проверяет наличие ключевых слов на главной странице.",
-        "start": 1782392779381,
-        "stop": 1782392784444,
-        "uuid": "80d5e3c5-ee5a-4ecc-a117-1467e13c2637",
-        "historyId": "bb7c6156327c6d89f6680a7b3b8b8c99",
-        "testCaseId": "bb7c6156327c6d89f6680a7b3b8b8c99",
-        "fullName": "test_dynamic#test_main_page_contains_keywords",
-        "labels": [
+        "uuid": "9e277285-74f6-4513-9603-8a149cb9110a",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
           {
-            "name": "suite",
-            "value": "test_dynamic"
-          },
-          {
-            "name": "host",
-            "value": "runnervm7b5n9"
-          },
-          {
-            "name": "thread",
-            "value": "3392-MainThread"
-          },
-          {
-            "name": "framework",
-            "value": "pytest"
-          },
-          {
-            "name": "language",
-            "value": "cpython3"
-          },
-          {
-            "name": "package",
-            "value": "test_dynamic"
+            "name": "browser_type",
+            "status": "passed",
+            "start": 1782392943783,
+            "stop": 1782392943783
           }
         ],
-        "titlePath": [
-          "test_dynamic.py"
-        ]
+        "afters": [
+          {
+            "name": "browser_type::<lambda>",
+            "start": 1782392957811
+          }
+        ],
+        "start": 1782392943783,
+        "stop": 1782392957811
+      },
+      {
+        "uuid": "f0ec952c-5613-4e14-976f-bbd8e4a7bb50",
+        "children": [
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "context",
+            "status": "passed",
+            "start": 1782392953016,
+            "stop": 1782392953020
+          }
+        ],
+        "afters": [
+          {
+            "name": "context::<lambda>",
+            "start": 1782392954884
+          }
+        ],
+        "start": 1782392953016,
+        "stop": 1782392954884
+      },
+      {
+        "uuid": "cc22542d-721c-4581-916f-ef7a63f5cd77",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "device",
+            "status": "passed",
+            "start": 1782392945465,
+            "stop": 1782392945465
+          }
+        ],
+        "afters": [
+          {
+            "name": "device::<lambda>",
+            "start": 1782392957786
+          }
+        ],
+        "start": 1782392945465,
+        "stop": 1782392957786
+      },
+      {
+        "uuid": "c04f4342-6a0b-4c85-adfc-db3d82209d3c",
+        "children": [
+          "d9228844-c8da-444c-8202-96b4e2dda93f"
+        ],
+        "befores": [
+          {
+            "name": "page",
+            "status": "passed",
+            "start": 1782392946914,
+            "stop": 1782392946953
+          }
+        ],
+        "afters": [
+          {
+            "name": "page::<lambda>",
+            "start": 1782392953005
+          }
+        ],
+        "start": 1782392946914,
+        "stop": 1782392953005
+      },
+      {
+        "uuid": "61be50ad-b8f2-4aff-9693-3d638213d78b",
+        "children": [
+          "d9228844-c8da-444c-8202-96b4e2dda93f"
+        ],
+        "befores": [
+          {
+            "name": "new_context",
+            "status": "passed",
+            "start": 1782392946910,
+            "stop": 1782392946910
+          }
+        ],
+        "afters": [
+          {
+            "name": "new_context::1",
+            "status": "passed",
+            "start": 1782392953005,
+            "stop": 1782392953012
+          },
+          {
+            "name": "new_context::<lambda>",
+            "start": 1782392953012
+          }
+        ],
+        "start": 1782392946910,
+        "stop": 1782392953013
+      },
+      {
+        "uuid": "31ebd01f-a249-4323-a70d-02471ec89e15",
+        "children": [
+          "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "0f3a8b40-9247-4937-88ae-a78fa5461327"
+        ],
+        "befores": [
+          {
+            "name": "launch_browser",
+            "status": "passed",
+            "start": 1782392943783,
+            "stop": 1782392943783
+          }
+        ],
+        "afters": [
+          {
+            "name": "launch_browser::<lambda>",
+            "start": 1782392957811
+          }
+        ],
+        "start": 1782392943783,
+        "stop": 1782392957811
       }
     ],
     "jobs": [
       {
         "name": "test-execution",
         "status": "completed",
-        "conclusion": "failure",
+        "conclusion": "success",
         "steps": [
           {
             "name": "Set up job",
             "conclusion": "success",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           },
           {
             "name": "Checkout repository",
             "conclusion": "success",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           },
           {
             "name": "Install dependencies",
             "conclusion": "success",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           },
           {
             "name": "Patch tests for compatibility",
             "conclusion": "success",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           },
           {
             "name": "Run Tests for котософт.рф",
-            "conclusion": "failure",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "conclusion": "success",
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           },
           {
             "name": "Generate Allure Report",
             "conclusion": "success",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           },
           {
             "name": "Send results to Dify",
             "conclusion": "success",
-            "started_at": "2026-06-25T13:07:02.284819Z",
-            "completed_at": "2026-06-25T13:07:02.284819Z"
+            "started_at": "2026-06-25T13:09:33.365950Z",
+            "completed_at": "2026-06-25T13:09:33.365950Z"
           }
         ]
       }
     ]
   },
   "history": [
+    {
+      "id": 28172352781,
+      "run_number": 19,
+      "display_title": "Dify Test Run",
+      "conclusion": "success",
+      "created_at": "2026-06-25T13:09:33.365950Z",
+      "run_started_at": "2026-06-25T13:09:33.365950Z",
+      "updated_at": "2026-06-25T13:09:33.365950Z",
+      "duration_seconds": 20,
+      "head_branch": "main",
+      "event": "repository_dispatch",
+      "requirements_text": "Проверь структуру проекта. Вот описание и правила из KODA.md:\n\n# КотоСофт — Справочный контекст\n\n## Обзор проекта\n\n**КотоСофт** — это статический веб-сайт, стилизованный под Windows 95 и Netscape Navigator 90-х годов. Вымышленная компания «КотоСофт» предлагает «кошачье» программное обеспечение. Сайт выполнен в ретро-эстетике с элементами Win95: окна, панель задач, меню, бегущие строки, счётчик посещений и т.д.\n\n**Технологии:**\n- Node.js (только для раздачи статических файлов, без фреймворков)\n- Чистый HTML5 + CSS3 (Win95-стилизация, анимации)\n- Vanilla JavaScript (без библиотек)\n- HTTP-сервер built-in (`http.createServer`)\n\n## Структура проекта\n\n```\n.\n├── server.js                    # Основной сервер (относительные пути, ./public)\n├── server-absolute.js           # Альтернативный сервер (абсолютные пути через __dirname)\n├── test-server.js               # Тестовый сервер (возвращает одну HTML-страницу на порту 3001)\n├── launch-server.bat            # Запуск сервера (содержимое не просмотрено)\n├── start-server.bat             # @echo off && node server.js\n├── start-server-absolute.bat    # cd C:\\kotosoft && node server-absolute.js\n├── start-test.bat               # @echo off && node test-server.js\n├── public/                      # Статические файлы сайта\n│   ├── index.html               # Главная страница — «Netscape Navigator» с окном Win95\n│   ├── apps.html                # Страница «Программы» — каталог продуктов\n│   ├── docs.html                # Страница «Документация» — ссылки на документацию\n│   ├── cat-of-day.html          # Страница «Кот дня»\n│   ├── cat-bt-player.html       # Страница «Cat BT Player» — описание продукта\n│   └── style.css                # Все стили в стиле Win95\n└── KODA.md                      # Этот файл\n```\n\n**Пустые/копии:**\n- `public — копия/` — копия директории public (не используется)\n- `.webui_secret_key` — файл секретного ключа (не читать, не коммитить)\n- `desktop.ini` — системный файл Windows\n\n## Сборка и запуск\n\n### Основной сервер (port 3000)\n\n```bash\nnode server.js\n```\n\nили через батник:\n```bash\nstart-server.bat\n```\n\n### Альтернативный сервер с абсолютными путями (port 3000)\n\n```bash\nnode server-absolute.js\n```\n\nили через батник (требует `C:\\kotosoft`):\n```bash\nstart-server-absolute.bat\n```\n\n### Тестовый сервер (port 3001)\n\n```bash\nnode test-server.js\n```\n\nили через батник:\n```bash\nstart-test.bat\n```\n\n### Запуск через батник (Windows)\n\n- `launch-server.bat` — назначение не просмотрено\n- `start-server.bat` — запуск основного сервера\n- `start-server-absolute.bat` — запуск с абсолютными путями\n- `start-test.bat` — запуск тестового сервера\n\n## Правила разработки\n\n- **Стиль:** Ретро Windows 95 / Netscape Navigator 90-х. Всё без фреймворков и зависимостей.\n- **JS:** Vanilla JavaScript, без модулей, без сборщиков.\n- **CSS:** Один файл `style.css`, содержит все стили и анимации.\n- **HTML:** Статические файлы, дублирование структуры (desktop, window, taskbar) на каждой странице.\n- **Отсутствует:** `package.json`, `node_modules`, тесты, линтеры, CI/CD.\n- **Общие JS-паттерны** повторяются на каждой странице:\n  - Часы в панели задач (обновление каждые 30 секунд)\n  - Бегущий курсор в адресной строке\n  - Факт дня (seeded random на основе московской даты)\n  - Анимация сворачивания/разворачивания окна Win95 (Genie-эффект)\n  - Счётчик посещений через `localStorage`\n\n## Особенности реализации\n\n1. **Два сервера:** `server.js` использует относительные пути (нужно запускать из корня), `server-absolute.js` использует `__dirname` и жёстко указывает `public/`.\n2. **Анимации:** Win95 Genie-эффект при сворачивании окна (3D-трансформации perspective + rotateX + scaleY).\n3. **Факт дня:** Определяется seeded random на основе московской даты — один факт в день для всех посетителей.\n4. **Счётчик посещений:** Клиентский, через `localStorage`, сохраняется между сессиями.\n5. **Минимизация:** При загрузке окно изначально свёрнуто — показывается рабочий стол с иконками.",
+      "dify_response": "<think>\nМы получили два набора данных: лог выполнения Pytest и сырые данные Allure-отчета. В логе выполнения: все 5 тестов PASSED за 15.71 секунды. Никаких ошибок или предупреждений. Allure данные также показывают, что все тесты прошли успешно (status \"passed\"), все фикстуры завершились без ошибок. Есть информация о тестах: test_site_accessible, test_page_contains_keyword[chromium], test_page_loads_without_errors[chromium], test_ui_kotosoft_availability[chromium], test_api_kotosoft_status. Никаких следов сбоев. Но пользователь просит выполнить локализацию ошибки (Root Cause Analysis). Возможно, он ожидает, что мы найдем проблему, которой нет? Или подразумевается, что нужно проанализировать общую стабильность? Либо это упражнение, где нужно сказать, что все тесты успешны, и багов не обнаружено. В задании также сказано: \"Если обнаружен реальный баг, сформируй строгий Баг-Репорт\". Поскольку баг не обнаружен, мы должны ответить, что все тесты прошли успешно, ошибок нет. Однако можно также провести анализ временных меток, чтобы убедиться, что все фикстуры отработали корректно, и сделать вывод, что инфраструктура стабильна, код тестов корректен, сайта (котософт.рф) работает (поскольку тест API и UI прошли). \n\nТаким образом, ответ: \"По результатам анализа логов и Allure-отчета все 5 тестов успешно пройдены. Ошибок не выявлено. Инфраструктура стабильна, код тестов не содержит дефектов, целевой сайт функционирует корректно. Баг-репорт не требуется.\"\n\nНо так как пользователь явно попросил \"Выполни локализацию ошибки (Root Cause Analysis)\", надо описать, что мы проверили все этапы, и причина отсутствия ошибки - отсутствие дефектов. Возможно, стоит упомянуть, что временные метки показывают корректную последовательность, фикстуры завершились успешно. \n\nОтвечу в структурированном виде: сначала общий вывод, затем анализ, и, если баг не найден, то указать \"Баг-репорт не формируется\".\n</think>## Анализ результатов выполнения тестов\n\n### Общая информация\n\n- Все **5 тестов** выполнены успешно (PASSED) за **15,71 с**.\n- Allure-отчёт не содержит ни одного теста со статусом `failed`, `broken` или `skipped`.\n- Фикстуры (запуск браузера, контекст, страница, очистка) отработали без ошибок (status `passed`).\n\n### Root Cause Analysis (RCA)\n\nПоскольку тесты прошли штатно, **явной ошибки (бага) нет**. Однако проведём анализ возможных источников сбоев, которые могли бы проявиться, но не проявились:\n\n1. **Инфраструктура CI/CD** (GitHub Actions)\n   - Все шаги сборки и запуска тестов завершены корректно.\n   - Логи не содержат предупреждений о тайм-аутах, нехватке памяти или проблемах с сетью.\n   - Вывод: инфраструктура стабильна.\n\n2. **Код тестов**\n   - Тесты `test_site_accessible`, `test_page_contains_keyword[chromium]`, `test_page_loads_without_errors[chromium]` проверяют доступность сайта, наличие ключевого слова и отсутствие ошибок загрузки.\n   - `test_ui_kotosoft_availability[chromium]` и `test_api_kotosoft_status` проверяют UI-доступность и API-статус сайта `котософт.рф`.\n   - Все тесты используют корректные фикстуры Playwright (браузер, контекст, страница). Баги в тестовом коде не обнаружены.\n   - Вывод: код тестов корректен.\n\n3. **Целевой сайт `котософт.рф`**\n   - UI-тест прошел: страница загружается, элементы видны.\n   - API-тест прошел: сервер возвращает ожидаемый статус.\n   - Вывод: сайт работает без дефектов.\n\n### Заключение\n\n**Реальный дефект (баг) не выявлен.** Все тесты зеленые, инфраструктура стабильна, тестовый код корректен, целевой сайт функционирует.\n\n### Формирование баг-репорта\n\nПоскольку ошибок нет, **баг-репорт не требуется**. Если в будущем появятся падающие тесты, необходимо проанализировать их логи, видео/скриншоты Allure и повторить RCA.",
+      "pytest_logs": "============================= test session starts ==============================\nplatform linux -- Python 3.10.20, pytest-9.1.1, pluggy-1.6.0\nrootdir: /home/runner/work/Kyrsovaya/Kyrsovaya\nplugins: playwright-0.8.0, allure-pytest-2.16.0, base-url-2.1.0\ncollected 5 items\n\ntest_dynamic.py::test_site_accessible PASSED                             [ 20%]\ntest_dynamic.py::test_page_contains_keyword[chromium] PASSED             [ 40%]\ntest_dynamic.py::test_page_loads_without_errors[chromium] PASSED         [ 60%]\ntest_kotosoft.py::test_ui_kotosoft_availability[chromium] PASSED         [ 80%]\ntest_kotosoft.py::test_api_kotosoft_status PASSED                        [100%]\n\n============================== 5 passed in 15.71s ==============================\n",
+      "allure_data": [
+        {
+          "uuid": "e7dda126-481b-4fc8-aa18-728538946fe6",
+          "children": [
+            "fb946ad0-2964-4e0c-925a-050ca4d10472",
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327",
+            "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
+          ],
+          "befores": [
+            {
+              "name": "delete_output_dir",
+              "status": "passed",
+              "start": 1782392942998,
+              "stop": 1782392942998
+            }
+          ],
+          "afters": [
+            {
+              "name": "delete_output_dir::<lambda>",
+              "start": 1782392957822
+            }
+          ],
+          "start": 1782392942998,
+          "stop": 1782392957822
+        },
+        {
+          "uuid": "51d74a9b-f495-4db2-96f2-07e27ceada91",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "connect_options",
+              "status": "passed",
+              "start": 1782392943783,
+              "stop": 1782392943783
+            }
+          ],
+          "afters": [
+            {
+              "name": "connect_options::<lambda>",
+              "start": 1782392957811
+            }
+          ],
+          "start": 1782392943783,
+          "stop": 1782392957811
+        },
+        {
+          "uuid": "f1666c1e-25c0-4d7a-b7a5-9a0c12244966",
+          "children": [
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "new_context",
+              "status": "passed",
+              "start": 1782392953016,
+              "stop": 1782392953016
+            }
+          ],
+          "afters": [
+            {
+              "name": "new_context::1",
+              "status": "passed",
+              "start": 1782392954884,
+              "stop": 1782392954890
+            },
+            {
+              "name": "new_context::<lambda>",
+              "start": 1782392954890
+            }
+          ],
+          "start": 1782392953016,
+          "stop": 1782392954890
+        },
+        {
+          "name": "test_page_contains_keyword[chromium]",
+          "status": "passed",
+          "parameters": [
+            {
+              "name": "browser_name",
+              "value": "'chromium'"
+            }
+          ],
+          "start": 1782392945504,
+          "stop": 1782392946896,
+          "uuid": "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+          "historyId": "8851d143da21bdf5821daf5e56f7fa26",
+          "testCaseId": "66f052500cd1d25412271b76af4f5aa6",
+          "fullName": "test_dynamic#test_page_contains_keyword",
+          "labels": [
+            {
+              "name": "suite",
+              "value": "test_dynamic"
+            },
+            {
+              "name": "host",
+              "value": "runnervmmklqx"
+            },
+            {
+              "name": "thread",
+              "value": "3311-MainThread"
+            },
+            {
+              "name": "framework",
+              "value": "pytest"
+            },
+            {
+              "name": "language",
+              "value": "cpython3"
+            },
+            {
+              "name": "package",
+              "value": "test_dynamic"
+            }
+          ],
+          "titlePath": [
+            "test_dynamic.py"
+          ]
+        },
+        {
+          "name": "test_site_accessible",
+          "status": "passed",
+          "start": 1782392942999,
+          "stop": 1782392943463,
+          "uuid": "fb946ad0-2964-4e0c-925a-050ca4d10472",
+          "historyId": "048d6ff6ce0527554c64608eaf3ab19c",
+          "testCaseId": "048d6ff6ce0527554c64608eaf3ab19c",
+          "fullName": "test_dynamic#test_site_accessible",
+          "labels": [
+            {
+              "name": "suite",
+              "value": "test_dynamic"
+            },
+            {
+              "name": "host",
+              "value": "runnervmmklqx"
+            },
+            {
+              "name": "thread",
+              "value": "3311-MainThread"
+            },
+            {
+              "name": "framework",
+              "value": "pytest"
+            },
+            {
+              "name": "language",
+              "value": "cpython3"
+            },
+            {
+              "name": "package",
+              "value": "test_dynamic"
+            }
+          ],
+          "titlePath": [
+            "test_dynamic.py"
+          ]
+        },
+        {
+          "uuid": "92352f0f-7b56-4f3c-a6c6-11a472bb65bb",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "browser_type_launch_args",
+              "status": "passed",
+              "start": 1782392943472,
+              "stop": 1782392943472
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser_type_launch_args::<lambda>",
+              "start": 1782392957821
+            }
+          ],
+          "start": 1782392943472,
+          "stop": 1782392957821
+        },
+        {
+          "name": "GitHub Actions",
+          "type": "github",
+          "reportName": "Allure Report with history",
+          "url": "https://thedemaxxx-byte.github.io/Kyrsovaya",
+          "reportUrl": "https://thedemaxxx-byte.github.io/Kyrsovaya/19",
+          "buildUrl": "https://github.com/thedemaxxx-byte/Kyrsovaya/actions/runs/28172352781",
+          "buildName": "GitHub Actions Run #28172352781",
+          "buildOrder": "19"
+        },
+        {
+          "uuid": "aafad057-fc38-410a-b36f-4d3019e009f8",
+          "children": [
+            "d9228844-c8da-444c-8202-96b4e2dda93f"
+          ],
+          "befores": [
+            {
+              "name": "output_path",
+              "status": "passed",
+              "start": 1782392946909,
+              "stop": 1782392946909
+            }
+          ],
+          "afters": [
+            {
+              "name": "output_path::<lambda>",
+              "start": 1782392953014
+            }
+          ],
+          "start": 1782392946909,
+          "stop": 1782392953014
+        },
+        {
+          "uuid": "644add60-6412-4ed4-88a3-319fe5fe4fcc",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "playwright",
+              "status": "passed",
+              "start": 1782392943472,
+              "stop": 1782392943783
+            }
+          ],
+          "afters": [
+            {
+              "name": "playwright::1",
+              "status": "passed",
+              "start": 1782392957812,
+              "stop": 1782392957820
+            },
+            {
+              "name": "playwright::<lambda>",
+              "start": 1782392957820
+            }
+          ],
+          "start": 1782392943472,
+          "stop": 1782392957820
+        },
+        {
+          "uuid": "722c8bce-6b61-4f2d-8ace-31f36bd5f367",
+          "children": [
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "_artifacts_recorder",
+              "status": "passed",
+              "start": 1782392953016,
+              "stop": 1782392953016
+            }
+          ],
+          "afters": [
+            {
+              "name": "_artifacts_recorder::1",
+              "status": "passed",
+              "start": 1782392954890,
+              "stop": 1782392954890
+            },
+            {
+              "name": "_artifacts_recorder::<lambda>",
+              "start": 1782392954890
+            }
+          ],
+          "start": 1782392953016,
+          "stop": 1782392954890
+        },
+        {
+          "uuid": "57bf90ac-a2cc-4d40-96b8-31f778127e44",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+          ],
+          "befores": [
+            {
+              "name": "_artifacts_recorder",
+              "status": "passed",
+              "start": 1782392945466,
+              "stop": 1782392945467
+            }
+          ],
+          "afters": [
+            {
+              "name": "_artifacts_recorder::1",
+              "status": "passed",
+              "start": 1782392946907,
+              "stop": 1782392946907
+            },
+            {
+              "name": "_artifacts_recorder::<lambda>",
+              "start": 1782392946907
+            }
+          ],
+          "start": 1782392945466,
+          "stop": 1782392946907
+        },
+        {
+          "uuid": "af027f5c-2a0d-4c1a-8688-68518b35e779",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+          ],
+          "befores": [
+            {
+              "name": "page",
+              "status": "passed",
+              "start": 1782392945474,
+              "stop": 1782392945503
+            }
+          ],
+          "afters": [
+            {
+              "name": "page::<lambda>",
+              "start": 1782392946896
+            }
+          ],
+          "start": 1782392945474,
+          "stop": 1782392946896
+        },
+        {
+          "uuid": "0305197e-ebe5-44ef-8985-66f4cc2ec6fd",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "browser_context_args",
+              "status": "passed",
+              "start": 1782392945465,
+              "stop": 1782392945465
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser_context_args::<lambda>",
+              "start": 1782392957786
+            }
+          ],
+          "start": 1782392945465,
+          "stop": 1782392957786
+        },
+        {
+          "uuid": "e705e405-2b32-4cfb-a6f9-4852dd27525e",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "browser",
+              "status": "passed",
+              "start": 1782392943783,
+              "stop": 1782392945464
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser::1",
+              "status": "passed",
+              "start": 1782392957787,
+              "stop": 1782392957811
+            },
+            {
+              "name": "browser::<lambda>",
+              "start": 1782392957811
+            }
+          ],
+          "start": 1782392943783,
+          "stop": 1782392957811
+        },
+        {
+          "name": "test_page_loads_without_errors[chromium]",
+          "status": "passed",
+          "parameters": [
+            {
+              "name": "browser_name",
+              "value": "'chromium'"
+            }
+          ],
+          "start": 1782392946954,
+          "stop": 1782392953004,
+          "uuid": "d9228844-c8da-444c-8202-96b4e2dda93f",
+          "historyId": "e7da6f61e19478427f524a76171b728c",
+          "testCaseId": "d7e664760262084dfff452b00603a1d2",
+          "fullName": "test_dynamic#test_page_loads_without_errors",
+          "labels": [
+            {
+              "name": "suite",
+              "value": "test_dynamic"
+            },
+            {
+              "name": "host",
+              "value": "runnervmmklqx"
+            },
+            {
+              "name": "thread",
+              "value": "3311-MainThread"
+            },
+            {
+              "name": "framework",
+              "value": "pytest"
+            },
+            {
+              "name": "language",
+              "value": "cpython3"
+            },
+            {
+              "name": "package",
+              "value": "test_dynamic"
+            }
+          ],
+          "titlePath": [
+            "test_dynamic.py"
+          ]
+        },
+        {
+          "uuid": "3254f2b6-56bd-4c79-b87f-b467b55712b2",
+          "children": [
+            "d9228844-c8da-444c-8202-96b4e2dda93f"
+          ],
+          "befores": [
+            {
+              "name": "context",
+              "status": "passed",
+              "start": 1782392946910,
+              "stop": 1782392946914
+            }
+          ],
+          "afters": [
+            {
+              "name": "context::<lambda>",
+              "start": 1782392953005
+            }
+          ],
+          "start": 1782392946910,
+          "stop": 1782392953005
+        },
+        {
+          "uuid": "6be35be7-899a-4e83-b556-c71cf4d1d93d",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+          ],
+          "befores": [
+            {
+              "name": "output_path",
+              "status": "passed",
+              "start": 1782392945466,
+              "stop": 1782392945466
+            }
+          ],
+          "afters": [
+            {
+              "name": "output_path::<lambda>",
+              "start": 1782392946907
+            }
+          ],
+          "start": 1782392945466,
+          "stop": 1782392946907
+        },
+        {
+          "uuid": "459237b6-07c9-434a-9963-aa626b4ed35b",
+          "children": [
+            "fb946ad0-2964-4e0c-925a-050ca4d10472",
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327",
+            "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
+          ],
+          "befores": [
+            {
+              "name": "_verify_url",
+              "status": "passed",
+              "start": 1782392942998,
+              "stop": 1782392942998
+            }
+          ],
+          "afters": [
+            {
+              "name": "_verify_url::<lambda>",
+              "start": 1782392957821
+            }
+          ],
+          "start": 1782392942998,
+          "stop": 1782392957821
+        },
+        {
+          "uuid": "22252249-2745-4ff3-8afa-fd52a41d3437",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "browser_type_launch_args",
+              "status": "passed",
+              "start": 1782392943472,
+              "stop": 1782392943472
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser_type_launch_args::<lambda>",
+              "start": 1782392957821
+            }
+          ],
+          "start": 1782392943472,
+          "stop": 1782392957821
+        },
+        {
+          "name": "test_api_kotosoft_status",
+          "status": "passed",
+          "description": "Проверяет HTTP-статус ответа сервера (200 OK).",
+          "attachments": [
+            {
+              "name": "stdout",
+              "source": "bcefbc7e-4ecf-4596-8126-48bd522d63e7-attachment.txt",
+              "type": "text/plain"
+            }
+          ],
+          "start": 1782392954893,
+          "stop": 1782392957785,
+          "uuid": "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76",
+          "historyId": "47dc16d2d6990dd5c841b4fcd2d5092e",
+          "testCaseId": "47dc16d2d6990dd5c841b4fcd2d5092e",
+          "fullName": "test_kotosoft#test_api_kotosoft_status",
+          "labels": [
+            {
+              "name": "suite",
+              "value": "test_kotosoft"
+            },
+            {
+              "name": "host",
+              "value": "runnervmmklqx"
+            },
+            {
+              "name": "thread",
+              "value": "3311-MainThread"
+            },
+            {
+              "name": "framework",
+              "value": "pytest"
+            },
+            {
+              "name": "language",
+              "value": "cpython3"
+            },
+            {
+              "name": "package",
+              "value": "test_kotosoft"
+            }
+          ],
+          "titlePath": [
+            "test_kotosoft.py"
+          ]
+        },
+        {
+          "uuid": "c287fc43-47e1-4bbe-8d59-2d50b5805822",
+          "children": [
+            "fb946ad0-2964-4e0c-925a-050ca4d10472",
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327",
+            "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
+          ],
+          "befores": [
+            {
+              "name": "base_url",
+              "status": "passed",
+              "start": 1782392942998,
+              "stop": 1782392942998
+            }
+          ],
+          "afters": [
+            {
+              "name": "base_url::<lambda>",
+              "start": 1782392957821
+            }
+          ],
+          "start": 1782392942998,
+          "stop": 1782392957821
+        },
+        {
+          "uuid": "01c9d36e-0f60-4c85-8a76-bc743d67169d",
+          "children": [
+            "d9228844-c8da-444c-8202-96b4e2dda93f"
+          ],
+          "befores": [
+            {
+              "name": "_artifacts_recorder",
+              "status": "passed",
+              "start": 1782392946909,
+              "stop": 1782392946909
+            }
+          ],
+          "afters": [
+            {
+              "name": "_artifacts_recorder::1",
+              "status": "passed",
+              "start": 1782392953013,
+              "stop": 1782392953013
+            },
+            {
+              "name": "_artifacts_recorder::<lambda>",
+              "start": 1782392953013
+            }
+          ],
+          "start": 1782392946909,
+          "stop": 1782392953013
+        },
+        {
+          "uuid": "3a1ed3de-78f3-416b-8536-f453f75c790a",
+          "children": [
+            "fb946ad0-2964-4e0c-925a-050ca4d10472",
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327",
+            "9ac70e0b-b5a3-4751-8ef9-32f3935e9e76"
+          ],
+          "befores": [
+            {
+              "name": "pytestconfig",
+              "status": "passed",
+              "start": 1782392942998,
+              "stop": 1782392942998
+            }
+          ],
+          "afters": [
+            {
+              "name": "pytestconfig::<lambda>",
+              "start": 1782392957822
+            }
+          ],
+          "start": 1782392942998,
+          "stop": 1782392957822
+        },
+        {
+          "uuid": "070ba681-5fa2-4af5-a69f-c066f1e6f575",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+          ],
+          "befores": [
+            {
+              "name": "context",
+              "status": "passed",
+              "start": 1782392945467,
+              "stop": 1782392945474
+            }
+          ],
+          "afters": [
+            {
+              "name": "context::<lambda>",
+              "start": 1782392946897
+            }
+          ],
+          "start": 1782392945467,
+          "stop": 1782392946897
+        },
+        {
+          "uuid": "ba579289-1def-4802-a5df-8f6860687162",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "_pw_artifacts_folder",
+              "status": "passed",
+              "start": 1782392945465,
+              "stop": 1782392945465
+            }
+          ],
+          "afters": [
+            {
+              "name": "_pw_artifacts_folder::1",
+              "status": "passed",
+              "start": 1782392957786,
+              "stop": 1782392957786
+            },
+            {
+              "name": "_pw_artifacts_folder::<lambda>",
+              "start": 1782392957786
+            }
+          ],
+          "start": 1782392945465,
+          "stop": 1782392957786
+        },
+        {
+          "uuid": "8c2ecdff-fc5c-4c10-8b10-4b93f9a6146d",
+          "children": [
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "page",
+              "status": "passed",
+              "start": 1782392953020,
+              "stop": 1782392953045
+            }
+          ],
+          "afters": [
+            {
+              "name": "page::<lambda>",
+              "start": 1782392954883
+            }
+          ],
+          "start": 1782392953020,
+          "stop": 1782392954883
+        },
+        {
+          "name": "test_ui_kotosoft_availability[chromium]",
+          "status": "passed",
+          "description": "Проверяет доступность сайта и наличие текста 'Котософт'.",
+          "attachments": [
+            {
+              "name": "stdout",
+              "source": "7de0a15c-3ccf-4363-a6cf-8335989fe0fb-attachment.txt",
+              "type": "text/plain"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "browser_name",
+              "value": "'chromium'"
+            }
+          ],
+          "start": 1782392953045,
+          "stop": 1782392954883,
+          "uuid": "0f3a8b40-9247-4937-88ae-a78fa5461327",
+          "historyId": "7d845ff2837860f752b95f3605764917",
+          "testCaseId": "58ea925eb039fdc0dd423e7673b3773b",
+          "fullName": "test_kotosoft#test_ui_kotosoft_availability",
+          "labels": [
+            {
+              "name": "suite",
+              "value": "test_kotosoft"
+            },
+            {
+              "name": "host",
+              "value": "runnervmmklqx"
+            },
+            {
+              "name": "thread",
+              "value": "3311-MainThread"
+            },
+            {
+              "name": "framework",
+              "value": "pytest"
+            },
+            {
+              "name": "language",
+              "value": "cpython3"
+            },
+            {
+              "name": "package",
+              "value": "test_kotosoft"
+            }
+          ],
+          "titlePath": [
+            "test_kotosoft.py"
+          ]
+        },
+        {
+          "uuid": "bdaf58ba-21f9-44d9-ae69-72eb14103d46",
+          "children": [
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "output_path",
+              "status": "passed",
+              "start": 1782392953016,
+              "stop": 1782392953016
+            }
+          ],
+          "afters": [
+            {
+              "name": "output_path::<lambda>",
+              "start": 1782392954891
+            }
+          ],
+          "start": 1782392953016,
+          "stop": 1782392954891
+        },
+        {
+          "uuid": "d0ad0666-cb80-4688-9fca-7aaa37e6cf6e",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "browser_context_args",
+              "status": "passed",
+              "start": 1782392945466,
+              "stop": 1782392945466
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser_context_args::<lambda>",
+              "start": 1782392957785
+            }
+          ],
+          "start": 1782392945466,
+          "stop": 1782392957785
+        },
+        {
+          "uuid": "e57a26ca-5b07-4954-be9d-fb9a08921e23",
+          "befores": [
+            {
+              "name": "browser_name",
+              "status": "passed",
+              "start": 1782392943783,
+              "stop": 1782392943783
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser_name::<lambda>",
+              "start": 1782392957812
+            }
+          ],
+          "start": 1782392943783,
+          "stop": 1782392957812
+        },
+        {
+          "uuid": "5d74bfcb-1fdd-4b14-9b5d-efb819b1969f",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c"
+          ],
+          "befores": [
+            {
+              "name": "new_context",
+              "status": "passed",
+              "start": 1782392945467,
+              "stop": 1782392945467
+            }
+          ],
+          "afters": [
+            {
+              "name": "new_context::1",
+              "status": "passed",
+              "start": 1782392946897,
+              "stop": 1782392946906
+            },
+            {
+              "name": "new_context::<lambda>",
+              "start": 1782392946906
+            }
+          ],
+          "start": 1782392945467,
+          "stop": 1782392946906
+        },
+        {
+          "uuid": "9e277285-74f6-4513-9603-8a149cb9110a",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "browser_type",
+              "status": "passed",
+              "start": 1782392943783,
+              "stop": 1782392943783
+            }
+          ],
+          "afters": [
+            {
+              "name": "browser_type::<lambda>",
+              "start": 1782392957811
+            }
+          ],
+          "start": 1782392943783,
+          "stop": 1782392957811
+        },
+        {
+          "uuid": "f0ec952c-5613-4e14-976f-bbd8e4a7bb50",
+          "children": [
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "context",
+              "status": "passed",
+              "start": 1782392953016,
+              "stop": 1782392953020
+            }
+          ],
+          "afters": [
+            {
+              "name": "context::<lambda>",
+              "start": 1782392954884
+            }
+          ],
+          "start": 1782392953016,
+          "stop": 1782392954884
+        },
+        {
+          "uuid": "cc22542d-721c-4581-916f-ef7a63f5cd77",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "device",
+              "status": "passed",
+              "start": 1782392945465,
+              "stop": 1782392945465
+            }
+          ],
+          "afters": [
+            {
+              "name": "device::<lambda>",
+              "start": 1782392957786
+            }
+          ],
+          "start": 1782392945465,
+          "stop": 1782392957786
+        },
+        {
+          "uuid": "c04f4342-6a0b-4c85-adfc-db3d82209d3c",
+          "children": [
+            "d9228844-c8da-444c-8202-96b4e2dda93f"
+          ],
+          "befores": [
+            {
+              "name": "page",
+              "status": "passed",
+              "start": 1782392946914,
+              "stop": 1782392946953
+            }
+          ],
+          "afters": [
+            {
+              "name": "page::<lambda>",
+              "start": 1782392953005
+            }
+          ],
+          "start": 1782392946914,
+          "stop": 1782392953005
+        },
+        {
+          "uuid": "61be50ad-b8f2-4aff-9693-3d638213d78b",
+          "children": [
+            "d9228844-c8da-444c-8202-96b4e2dda93f"
+          ],
+          "befores": [
+            {
+              "name": "new_context",
+              "status": "passed",
+              "start": 1782392946910,
+              "stop": 1782392946910
+            }
+          ],
+          "afters": [
+            {
+              "name": "new_context::1",
+              "status": "passed",
+              "start": 1782392953005,
+              "stop": 1782392953012
+            },
+            {
+              "name": "new_context::<lambda>",
+              "start": 1782392953012
+            }
+          ],
+          "start": 1782392946910,
+          "stop": 1782392953013
+        },
+        {
+          "uuid": "31ebd01f-a249-4323-a70d-02471ec89e15",
+          "children": [
+            "ff1313d0-4f92-4d4a-b56c-a8832f63ec7c",
+            "d9228844-c8da-444c-8202-96b4e2dda93f",
+            "0f3a8b40-9247-4937-88ae-a78fa5461327"
+          ],
+          "befores": [
+            {
+              "name": "launch_browser",
+              "status": "passed",
+              "start": 1782392943783,
+              "stop": 1782392943783
+            }
+          ],
+          "afters": [
+            {
+              "name": "launch_browser::<lambda>",
+              "start": 1782392957811
+            }
+          ],
+          "start": 1782392943783,
+          "stop": 1782392957811
+        }
+      ],
+      "jobs": [
+        {
+          "name": "test-execution",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            },
+            {
+              "name": "Checkout repository",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            },
+            {
+              "name": "Install dependencies",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            },
+            {
+              "name": "Patch tests for compatibility",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            },
+            {
+              "name": "Run Tests for котософт.рф",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            },
+            {
+              "name": "Generate Allure Report",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            },
+            {
+              "name": "Send results to Dify",
+              "conclusion": "success",
+              "started_at": "2026-06-25T13:09:33.365950Z",
+              "completed_at": "2026-06-25T13:09:33.365950Z"
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": 28172212563,
       "run_number": 17,
