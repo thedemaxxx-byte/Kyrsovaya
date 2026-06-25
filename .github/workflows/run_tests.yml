@@ -46,6 +46,8 @@ jobs:
                   f.write('import pytest\ndef test_dynamic_placeholder():\n    pass  # AI-generated code was invalid, placeholder used\n')
               print('test_dynamic.py: Replaced with placeholder test')
           "
+      - name: Patch tests for compatibility
+        run: python patch_tests.py
       - name: Run Tests for котософт.рф
         run: pytest --alluredir=allure-results --log-cli-level=INFO > pytest_execution.log 2>&1
         continue-on-error: true
