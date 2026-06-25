@@ -148,7 +148,9 @@ def main():
             with open("dashboard.html", "r", encoding="utf-8") as f:
                 dash_content = f.read()
                 
-            match = re.search(r'// __LOCAL_DATA_START__\s*const LOCAL_DATA = (.*?);\s*// __LOCAL_DATA_END__', dash_content, re.DOTALL)
+            # Use dynamic pattern to prevent self-matching during script serialization
+            pattern = r'// ' + r'__LOCAL_DATA_START__\s*const LOCAL_DATA = (.*?);\s*// ' + r'__LOCAL_DATA_END__'
+            match = re.search(pattern, dash_content, re.DOTALL)
             if match:
                 old_local_data_str = match.group(1).strip()
                 if old_local_data_str != "null":
@@ -182,10 +184,11 @@ def main():
                 
             json_str = json.dumps(new_local_data, ensure_ascii=False, indent=2)
             
-            start_marker = '// __LOCAL_DATA_START__'
-            end_marker = '// __LOCAL_DATA_END__'
+            start_marker = '// ' + '__LOCAL_DATA_START__'
+            end_marker = '// ' + '__LOCAL_DATA_END__'
             start_idx = dash_content.find(start_marker)
-            end_idx = dash_content.find(end_marker)
+            # Use rfind to find the actual marker at the end of the script block
+            end_idx = dash_content.rfind(end_marker)
             
             if start_idx != -1 and end_idx != -1:
                 new_dash_content = (
